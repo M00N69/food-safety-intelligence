@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0B1628">
+<meta name="description" content="Food Safety Intelligence — portail de veille, de données et de ressources officielles en sécurité des aliments.">
+<title>Food Safety Intelligence — Le portail de référence</title>
+<style>
+@layer reset, tokens, base, components, utilities;
+
+/* ============================== RESET ============================== */
+@layer reset{
+  *,*::before,*::after{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body,h1,h2,h3,h4,p,ol,ul,li,figure{margin:0}
+  ul,ol{padding:0;list-style:none}
+  img,svg{display:block}
+  button,input,select,textarea{font:inherit;color:inherit}
+  a{color:inherit;text-decoration:none}
+}
+
+/* ============================== TOKENS ============================== */
+@layer tokens{
+  :root{
+    color-scheme:light;
+
+    /* Échelle marine — identique dans les deux thèmes, jamais inversée */
+    --navy-900:#0B1628;--navy-800:#101D32;--navy-700:#172944;
+    --green-900:#053B31;--green-800:#064E41;--green-700:#0A6B5A;--green-600:#0E8A72;
+    --green-500:#12A58C;--green-400:#3FD3B4;--green-300:#7FE0C6;--green-200:#A7E9DA;--green-100:#DCF5EE;
+    --blue-700:#2A5AA8;--blue-100:#E8F1FF;
+    --violet-700:#5448B8;--violet-100:#EFEEFD;
+    --amber-700:#8A5A10;--amber-100:#FFF6E6;
+    --rose-700:#A8455B;--rose-100:#FDEEF0;
+    --gray-050:#F7F9FC;--gray-100:#F1F4F8;--gray-200:#E3E9F0;--gray-300:#CFD8E3;
+    --gray-400:#9AA8BA;--gray-500:#77869B;--gray-600:#5C6C82;--gray-700:#41526A;--gray-900:#0E1B2E;
+
+    /* Couche sémantique — THÈME CLAIR */
+    --bg-page:var(--gray-050);
+    --bg-surface:#FFFFFF;
+    --bg-inset:var(--gray-100);
+    --text-primary:var(--gray-900);
+    --text-secondary:var(--gray-700);
+    --text-muted:var(--gray-600);
+    --border:var(--gray-200);
+    --border-strong:var(--gray-300);
+    --color-primary:var(--green-700);
+    --color-primary-hover:var(--green-800);
+    --color-primary-soft:var(--green-100);
+    --on-primary:#FFFFFF;
+    --color-accent:var(--green-600);
+    --focus:var(--green-700);
+    --header-bg:rgba(255,255,255,.92);
+
+    /* Bandes sombres fixes (hero, footer, bandeau, favoris) */
+    --band-bg:var(--navy-900);
+    --band-text:#D3DEEB;
+    --band-muted:#9FB0C4;
+    --band-accent:#7DE0C4;
+    --band-line:rgba(255,255,255,.14);
+    --band-fill:rgba(255,255,255,.08);
+
+    /* Pastilles & badges de statut */
+    --pill-type-bg:var(--gray-100);--pill-type-fg:var(--gray-700);
+    --pill-conforme-bg:var(--blue-100);--pill-conforme-fg:var(--blue-700);
+    --pill-guide-bg:var(--violet-100);--pill-guide-fg:var(--violet-700);
+    --pill-science-bg:var(--green-100);--pill-science-fg:var(--green-800);
+    --pill-outil-bg:var(--gray-100);--pill-outil-fg:var(--gray-700);
+    --pill-data-bg:var(--amber-100);--pill-data-fg:var(--amber-700);
+    --pill-registre-bg:var(--rose-100);--pill-registre-fg:var(--rose-700);
+    --star-on-bg:var(--amber-100);--star-on-fg:var(--amber-700);
+
+    /* Typographie */
+    --font-ui:Inter,"Inter var","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+    --font-mono:"JetBrains Mono",ui-monospace,"Cascadia Mono","SF Mono",Consolas,"Liberation Mono",monospace;
+    --text-xs:.75rem;--text-sm:.875rem;--text-base:1rem;--text-lg:1.125rem;--text-xl:1.375rem;
+    --text-2xl:1.75rem;--text-3xl:2.25rem;--text-4xl:3rem;--text-5xl:4rem;
+    --leading:1.6;--leading-tight:1.15;--tracking-caps:.12em;
+
+    /* Espacement — grille de 8 px */
+    --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;
+    --space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;--space-16:64px;--space-20:80px;
+
+    /* Rayons */
+    --radius-sm:6px;--radius-md:10px;--radius-lg:14px;--radius-xl:20px;--radius-full:9999px;
+
+    /* Z-index — échelle fermée */
+    --z-base:1;--z-sticky:20;--z-fav:40;--z-modal:50;--z-tour:60;--z-toast:80;
+
+    /* Ombres */
+    --shadow-sm:0 1px 2px rgba(16,29,50,.06),0 2px 8px rgba(16,29,50,.05);
+    --shadow-md:0 4px 12px rgba(16,29,50,.07),0 14px 34px rgba(16,29,50,.09);
+    --shadow-lg:0 14px 30px rgba(16,29,50,.10),0 34px 76px rgba(16,29,50,.14);
+    --shadow-band:0 20px 48px rgba(7,13,24,.40);
+
+    /* Layout */
+    --layout-max:1180px;--layout-gutter:20px;--header-h:68px;
+
+    /* Mouvement */
+    --t-fast:150ms;--t-mid:300ms;--t-slow:600ms;--ease:cubic-bezier(.4,0,.2,1);
+  }
+
+  /* Couche sémantique — THÈME SOMBRE (seule cette couche change) */
+  [data-theme="dark"]{
+    color-scheme:dark;
+    --bg-page:#0A111E;
+    --bg-surface:#111B2D;
+    --bg-inset:#0E1728;
+    --text-primary:#E9EEF7;
+    --text-secondary:#AEBDD0;
+    --text-muted:#8A9AB2;
+    --border:#24334D;
+    --border-strong:#334564;
+    --color-primary:var(--green-400);
+    --color-primary-hover:var(--green-300);
+    --color-primary-soft:#0F2E28;
+    --on-primary:#06231D;
+    --color-accent:var(--green-300);
+    --focus:var(--green-400);
+    --header-bg:rgba(17,27,45,.92);
+
+    --pill-type-bg:#212C3E;--pill-type-fg:#B9C6D8;
+    --pill-conforme-bg:#16294A;--pill-conforme-fg:#A8C8F7;
+    --pill-guide-bg:#232052;--pill-guide-fg:#BDB6FF;
+    --pill-science-bg:#0F2E28;--pill-science-fg:#7FE0C6;
+    --pill-outil-bg:#212C3E;--pill-outil-fg:#B9C6D8;
+    --pill-data-bg:#332409;--pill-data-fg:#F0C674;
+    --pill-registre-bg:#38161F;--pill-registre-fg:#F3AEBB;
+    --star-on-bg:#332409;--star-on-fg:#F0C674;
+
+    --shadow-sm:0 1px 2px rgba(0,0,0,.4),0 2px 8px rgba(0,0,0,.3);
+    --shadow-md:0 4px 12px rgba(0,0,0,.45),0 14px 34px rgba(0,0,0,.4);
+    --shadow-lg:0 14px 30px rgba(0,0,0,.5),0 34px 76px rgba(0,0,0,.55);
+  }
+}
+
+/* ============================== BASE ============================== */
+@layer base{
+  html{scroll-behavior:smooth;scroll-padding-top:calc(var(--header-h) + var(--space-4))}
+  body{
+    background:var(--bg-page);
+    color:var(--text-primary);
+    font:var(--text-base)/var(--leading) var(--font-ui);
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  ::selection{background:var(--color-primary-soft);color:var(--text-primary)}
+  .container{width:min(var(--layout-max),calc(100% - var(--layout-gutter) * 2));margin-inline:auto}
+  .ico{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.14em}
+  .kicker{
+    display:inline-flex;align-items:center;gap:var(--space-2);
+    font-family:var(--font-mono);font-size:var(--text-xs);font-weight:700;
+    letter-spacing:var(--tracking-caps);text-transform:uppercase;color:var(--color-primary);
+  }
+  .kicker::before{content:"";width:22px;height:2px;background:currentColor;border-radius:var(--radius-full)}
+  h1,h2,h3,h4{font-weight:800;letter-spacing:-.03em;line-height:var(--leading-tight)}
+}
+
+/* ============================== COMPOSANTS ============================== */
+@layer components{
+  /* --- Bandeau supérieur --- */
+  .topbar{background:var(--band-bg);color:var(--band-muted);font-size:var(--text-xs)}
+  .topbar .container{min-height:36px;display:flex;align-items:center;justify-content:space-between;gap:var(--space-4)}
+  .topbar strong{color:#FFFFFF;font-family:var(--font-mono);letter-spacing:.14em;font-size:11px}
+  .toplinks{display:flex;gap:var(--space-5)}
+  .toplinks a{transition:color var(--t-fast) var(--ease)}
+  .toplinks a:hover{color:#FFFFFF}
+  .toplinks span{font-family:var(--font-mono);letter-spacing:.06em}
+
+  /* --- En-tête --- */
+  header{position:sticky;top:0;z-index:var(--z-sticky);background:var(--header-bg);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+  .nav{min-height:var(--header-h);display:flex;align-items:center;justify-content:space-between;gap:var(--space-6);position:relative}
+  .brand{display:flex;align-items:center;gap:var(--space-3);min-width:250px}
+  .brandmark{width:42px;height:42px;border-radius:13px;background:linear-gradient(145deg,var(--green-700),#176C9B);display:grid;place-items:center;color:#FFFFFF;font-size:22px;box-shadow:0 6px 18px rgba(10,107,90,.35)}
+  .brandname{font-weight:800;letter-spacing:-.03em;font-size:var(--text-lg)}
+  .brandname span{color:var(--color-primary)}
+  .brand small{display:block;font-family:var(--font-mono);color:var(--text-muted);font-size:10px;letter-spacing:.14em;text-transform:uppercase;margin-top:2px}
+  .navlinks{display:flex;gap:var(--space-6);color:var(--text-secondary);font-size:var(--text-sm);font-weight:650}
+  .navlinks a{padding:var(--space-2) 0;border-bottom:2px solid transparent;transition:color var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease)}
+  .navlinks a:hover{color:var(--color-primary);border-bottom-color:var(--color-primary)}
+  .navright{display:flex;gap:var(--space-2);align-items:center}
+
+  /* --- Boutons --- */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);
+    border:1px solid var(--border);background:var(--bg-surface);color:var(--text-primary);
+    padding:10px 16px;border-radius:var(--radius-md);font-size:var(--text-sm);font-weight:700;
+    transition:transform var(--t-fast) var(--ease),box-shadow var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease),background var(--t-fast) var(--ease);
+  }
+  .btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-md);border-color:var(--border-strong)}
+  .btn:active{transform:translateY(0);box-shadow:var(--shadow-sm)}
+  .btn.primary{background:var(--color-primary);border-color:var(--color-primary);color:var(--on-primary)}
+  .btn.primary:hover{background:var(--color-primary-hover);border-color:var(--color-primary-hover)}
+  .btn.band{background:#FFFFFF;border-color:#FFFFFF;color:var(--navy-900)}
+  .linkbtn{border:0;background:transparent;padding:0;color:var(--color-primary);font-weight:800;font-size:var(--text-sm);cursor:pointer;display:inline-flex;align-items:center;gap:var(--space-2)}
+  .linkbtn:hover{color:var(--color-primary-hover);text-decoration:underline;text-underline-offset:4px}
+  .mobilemenu{display:none;padding:9px 11px;font-size:18px;line-height:1}
+
+  .theme-toggle{width:38px;height:38px;display:grid;place-items:center;border:1px solid var(--border);background:var(--bg-surface);border-radius:var(--radius-md);font-size:17px;color:var(--text-secondary);transition:transform var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease),color var(--t-fast) var(--ease)}
+  .theme-toggle:hover{color:var(--color-primary);border-color:var(--color-primary);transform:rotate(-12deg)}
+  [data-theme="dark"] .theme-toggle .ico-moon{display:none}
+  :root:not([data-theme="dark"]) .theme-toggle .ico-sun{display:none}
+  [data-theme="dark"] .theme-toggle .ico-sun{display:block}
+
+  /* --- Hero --- */
+  .hero{
+    position:relative;overflow:hidden;color:#FFFFFF;
+    background:radial-gradient(ellipse at 78% 18%,rgba(21,96,104,.55) 0%,transparent 36%),linear-gradient(115deg,var(--navy-900) 0%,var(--navy-800) 55%,#123B4B 100%);
+    padding:var(--space-20) 0 var(--space-16);
+  }
+  .hero::after{content:"";position:absolute;width:520px;height:520px;border:1px solid rgba(255,255,255,.07);border-radius:50%;right:-130px;top:-190px;box-shadow:0 0 0 50px rgba(255,255,255,.04),0 0 0 100px rgba(255,255,255,.025);pointer-events:none}
+  .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:var(--space-12);align-items:center;position:relative;z-index:var(--z-base)}
+  .eyebrow{display:inline-flex;align-items:center;gap:var(--space-2);color:var(--band-accent);background:var(--band-fill);border:1px solid rgba(255,255,255,.2);padding:7px 12px;border-radius:var(--radius-full);font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+  .pulse{width:7px;height:7px;background:var(--band-accent);border-radius:50%;box-shadow:0 0 0 4px rgba(125,224,196,.18)}
+  .hero h1{font-size:clamp(2.5rem,5vw,3.75rem);line-height:1.05;letter-spacing:-.04em;margin:var(--space-6) 0 var(--space-5);max-width:720px}
+  .hero h1 em{font-style:normal;color:var(--band-accent)}
+  .hero p{font-size:var(--text-lg);color:#C5D1DF;max-width:640px;margin:0 0 var(--space-8)}
+  .hero-actions{display:flex;gap:var(--space-3);flex-wrap:wrap}
+  .hero .btn{padding:13px 20px}
+  .hero .btn.primary{background:var(--green-500);border-color:var(--green-500);color:#04211B}
+  .hero .btn.primary:hover{background:var(--green-400);border-color:var(--green-400)}
+  .hero .btn.ghost{background:var(--band-fill);border-color:rgba(255,255,255,.28);color:#FFFFFF}
+  .hero .btn.ghost:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.5)}
+  .hero-foot{display:flex;gap:var(--space-6);margin-top:var(--space-8);color:var(--band-muted);font-size:var(--text-sm);flex-wrap:wrap}
+  .hero-foot span{display:flex;gap:var(--space-2);align-items:center}
+  .hero-foot .ico{color:var(--band-accent);font-size:15px}
+  .hero-foot b{color:#FFFFFF}
+  .hero-panel{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.16);border-radius:var(--radius-xl);padding:var(--space-6);backdrop-filter:blur(8px);box-shadow:var(--shadow-band)}
+  .panel-head{display:flex;justify-content:space-between;align-items:center;gap:var(--space-3);margin-bottom:var(--space-4)}
+  .panel-head strong{font-size:var(--text-sm);letter-spacing:-.01em}
+  .live{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:var(--band-accent);background:rgba(125,224,196,.13);border:1px solid rgba(125,224,196,.3);padding:5px 9px;border-radius:var(--radius-sm);font-weight:700;white-space:nowrap}
+  .signal{display:grid;grid-template-columns:42px 1fr auto;gap:var(--space-3);align-items:center;padding:var(--space-3) 0;border-top:1px solid var(--band-line)}
+  .signal:first-of-type{border-top:0;padding-top:0}
+  .signal-icon{width:42px;height:42px;border-radius:12px;background:var(--band-fill);color:var(--band-accent);display:grid;place-items:center;font-size:19px}
+  .signal strong{display:block;font-size:var(--text-sm);color:#FFFFFF}
+  .signal small{display:block;font-size:var(--text-xs);color:var(--band-muted);margin-top:2px}
+  .tag{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;color:#C5D1DF;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);padding:4px 8px;border-radius:var(--radius-sm);white-space:nowrap}
+
+  /* --- Recherche --- */
+  .search-wrap{margin-top:calc(var(--space-8) * -1);position:relative;z-index:var(--z-base)}
+  .searchbox{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-3);box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:var(--space-3)}
+  .searchbox .searchicon{font-size:19px;color:var(--color-primary);padding:0 var(--space-1)}
+  .searchbox input{border:0;outline:0;flex:1;min-width:0;font-size:var(--text-base);color:var(--text-primary);background:transparent}
+  .searchbox input::placeholder{color:var(--text-muted)}
+  .searchbox .btn{white-space:nowrap}
+  .quicksearch{display:flex;gap:var(--space-3);flex-wrap:wrap;padding:var(--space-3) var(--space-1);color:var(--text-muted);font-size:var(--text-xs);align-items:center}
+  .quicksearch button{border:0;background:transparent;color:var(--text-secondary);text-decoration:underline;text-underline-offset:3px;font-size:var(--text-xs);padding:0;transition:color var(--t-fast) var(--ease)}
+  .quicksearch button:hover{color:var(--color-primary)}
+
+  /* --- Statistiques --- */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-4);margin:var(--space-10) 0 var(--space-16)}
+  .stat{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-5) var(--space-6);box-shadow:var(--shadow-sm)}
+  .stat strong{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:var(--text-3xl);letter-spacing:-.04em;display:block;line-height:1.1}
+  .stat span{font-size:var(--text-xs);color:var(--text-muted);font-weight:650}
+  .stat i{font-style:normal;color:var(--color-primary);font-size:var(--text-xs);font-weight:800}
+
+  /* --- Sections --- */
+  .section{padding:var(--space-4) 0 var(--space-16)}
+  .section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--space-8);margin-bottom:var(--space-6)}
+  .section h2{font-size:var(--text-3xl);letter-spacing:-.035em;margin:var(--space-3) 0 var(--space-2);max-width:760px}
+  .section-head p{margin:0;color:var(--text-secondary);font-size:var(--text-sm);max-width:640px}
+  .textlink{font-size:var(--text-sm);color:var(--color-primary);font-weight:800;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+  .textlink:hover{color:var(--color-primary-hover);text-decoration:underline;text-underline-offset:4px}
+
+  /* --- Domaines --- */
+  .domain-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-4)}
+  .domain{
+    background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);
+    padding:var(--space-5);text-align:left;position:relative;min-height:140px;
+    transition:transform var(--t-fast) var(--ease),box-shadow var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease),background var(--t-fast) var(--ease);
+  }
+  .domain:hover{border-color:var(--color-primary);box-shadow:var(--shadow-md);transform:translateY(-3px)}
+  .domain.active{border-color:var(--color-primary);background:var(--color-primary-soft);box-shadow:var(--shadow-sm)}
+  .domain .ico-\boxed{width:40px;height:40px;border-radius:12px;background:var(--color-primary-soft);color:var(--color-primary);display:grid;place-items:center;font-size:20px;margin-bottom:var(--space-3);transition:transform var(--t-mid) var(--ease)}
+  .domain:hover .ico-box{transform:scale(1.08)}
+  .domain strong{display:block;font-size:var(--text-sm)}
+  .domain small{display:block;color:var(--text-muted);font-size:var(--text-xs);margin-top:3px}
+  .domain .count{position:absolute;right:var(--space-4);top:var(--space-4);font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--text-muted);background:var(--bg-inset);border-radius:var(--radius-full);padding:2px 8px}
+  .domain.active .count{background:var(--bg-surface);color:var(--color-primary)}
+
+  /* --- Filtres --- */
+  .content-layout{display:grid;grid-template-columns:250px 1fr;gap:var(--space-6);align-items:start}
+  .filters{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-5);position:sticky;top:calc(var(--header-h) + var(--space-4));box-shadow:var(--shadow-sm)}
+  .filters h3{font-size:var(--text-sm);margin:0 0 var(--space-4);display:flex;align-items:center;gap:var(--space-2)}
+  .filter-group{border-top:1px solid var(--border);padding:var(--space-4) 0}
+  .filter-group:first-of-type{border-top:0;padding-top:0}
+  .filter-group label.title{display:block;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:var(--space-2)}
+  .filter-group select{width:100%;border:1px solid var(--border);padding:9px 10px;border-radius:var(--radius-sm);color:var(--text-secondary);background:var(--bg-surface);font-size:var(--text-xs)}
+  .filter-group select:hover{border-color:var(--border-strong)}
+  .checkline{display:flex;gap:var(--space-2);align-items:center;font-size:var(--text-xs);color:var(--text-secondary);margin:var(--space-2) 0;cursor:pointer}
+  .checkline input{accent-color:var(--color-primary);width:15px;height:15px}
+  .reset{border:0;background:transparent;color:var(--color-primary);font-size:var(--text-xs);font-weight:800;padding:0;display:inline-flex;align-items:center;gap:6px}
+  .reset:hover{color:var(--color-primary-hover);text-decoration:underline;text-underline-offset:3px}
+
+  /* --- Catalogue --- */
+  .catalog-head{display:flex;justify-content:space-between;align-items:center;margin:0 0 var(--space-4);gap:var(--space-4);flex-wrap:wrap}
+  .catalog-head strong{font-size:var(--text-base)}
+  .catalog-head span{font-size:var(--text-xs);color:var(--text-muted)}
+  .sort{border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-surface);padding:9px 11px;font-size:var(--text-xs);color:var(--text-secondary)}
+  .resource-list{display:grid;gap:var(--space-3)}
+  .resource{
+    background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);
+    padding:var(--space-5);display:grid;grid-template-columns:48px 1fr auto;gap:var(--space-4);align-items:start;
+    transition:transform var(--t-fast) var(--ease),box-shadow var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease);
+  }
+  .resource:hover{border-color:var(--border-strong);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+  .resource-logo{width:48px;height:48px;border-radius:13px;background:var(--color-primary-soft);color:var(--color-primary);display:grid;place-items:center;font-size:21px}
+  .resource h3{margin:0 0 5px;font-size:var(--text-base);letter-spacing:-.02em}
+  .resource p{margin:0;color:var(--text-secondary);font-size:var(--text-xs);line-height:1.6;max-width:640px}
+  .meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:var(--space-3)}
+  .pill{font-size:10px;padding:4px 8px;border-radius:var(--radius-sm);background:var(--pill-type-bg);color:var(--pill-type-fg);font-weight:750;letter-spacing:.02em}
+  .pill.api{background:var(--pill-science-bg);color:var(--pill-science-fg)}
+  .pill.portal{background:var(--pill-conforme-bg);color:var(--pill-conforme-fg)}
+  .pill.report{background:var(--pill-data-bg);color:var(--pill-data-fg)}
+  .pill.conforme{background:var(--pill-conforme-bg);color:var(--pill-conforme-fg)}
+  .pill.guide{background:var(--pill-guide-bg);color:var(--pill-guide-fg)}
+  .pill.science{background:var(--pill-science-bg);color:var(--pill-science-fg)}
+  .pill.outil{background:var(--pill-outil-bg);color:var(--pill-outil-fg)}
+  .pill.data{background:var(--pill-data-bg);color:var(--pill-data-fg)}
+  .pill.registre{background:var(--pill-registre-bg);color:var(--pill-registre-fg)}
+  .vline{display:flex;gap:var(--space-2);align-items:center;margin-top:var(--space-2);flex-wrap:wrap}
+  .vbadge{font-size:10px;font-weight:800;padding:4px 8px;border-radius:var(--radius-sm);white-space:nowrap;display:inline-flex;align-items:center;gap:5px;background:var(--pill-science-bg);color:var(--pill-science-fg)}
+  .vbadge.protect{background:var(--pill-data-bg);color:var(--pill-data-fg)}
+  .vbadge.down{background:var(--pill-registre-bg);color:var(--pill-registre-fg)}
+  .resource-actions{display:flex;flex-direction:column;align-items:flex-end;gap:var(--space-2)}
+  .resource-actions .btn{padding:8px 12px;font-size:var(--text-xs)}
+  .star{border:1px solid var(--border);background:var(--bg-surface);border-radius:var(--radius-md);padding:8px 10px;font-size:15px;line-height:1;color:var(--text-muted);display:inline-flex;transition:transform var(--t-fast) var(--ease),background var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease),color var(--t-fast) var(--ease)}
+  .star:hover{border-color:var(--amber-700);color:var(--amber-700);transform:scale(1.08)}
+  .star.on{background:var(--star-on-bg);border-color:var(--star-on-fg);color:var(--star-on-fg)}
+  .star.on .ico{fill:currentColor}
+  .empty{padding:var(--space-12) var(--space-6);text-align:center;color:var(--text-muted);background:var(--bg-surface);border:1px dashed var(--border-strong);border-radius:var(--radius-lg);font-size:var(--text-sm)}
+  .empty .ico{font-size:30px;color:var(--border-strong);margin:0 auto var(--space-3)}
+  .empty small{font-size:var(--text-xs)}
+
+  /* --- Familles de ressources --- */
+  .type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4)}
+  .type-card{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-6);transition:transform var(--t-fast) var(--ease),box-shadow var(--t-fast) var(--ease)}
+  .type-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+  .type-card .ico-\boxed{width:44px;height:44px;border-radius:12px;background:var(--color-primary-soft);color:var(--color-primary);display:grid;place-items:center;font-size:21px;margin-bottom:var(--space-4)}
+  .type-card h3{font-size:var(--text-base);margin:0 0 var(--space-2)}
+  .type-card p{font-size:var(--text-xs);color:var(--text-muted);margin:0;line-height:1.65}
+
+  /* --- Guides --- */
+  .guides{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4)}
+  .guide{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-5);display:flex;flex-direction:column;gap:var(--space-2);transition:transform var(--t-fast) var(--ease),box-shadow var(--t-fast) var(--ease)}
+  .guide:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+  .guide .country{font-family:var(--font-mono);font-size:10px;color:var(--color-primary);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+  .guide h3{font-size:var(--text-base);margin-top:var(--space-1)}
+  .guide p{font-size:var(--text-xs);color:var(--text-muted);margin:0 0 var(--space-3);line-height:1.6}
+  .guide a{font-size:var(--text-xs);font-weight:800;color:var(--color-primary);display:inline-flex;align-items:center;gap:5px;margin-top:auto}
+  .guide a:hover{color:var(--color-primary-hover);text-decoration:underline;text-underline-offset:3px}
+
+  /* --- Bandeau veille --- */
+  .alert-strip{background:var(--band-bg);color:#FFFFFF;border-radius:var(--radius-xl);padding:var(--space-8);display:flex;justify-content:space-between;align-items:center;gap:var(--space-8);box-shadow:var(--shadow-band);position:relative;overflow:hidden}
+  .alert-strip::after{content:"";position:absolute;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(125,224,196,.16),transparent 70%);right:-60px;top:-90px;pointer-events:none}
+  .alert-strip .kicker{color:var(--band-accent);position:relative;z-index:var(--z-base)}
+  .alert-strip h3{margin:var(--space-3) 0 var(--space-2);font-size:var(--text-xl);position:relative;z-index:var(--z-base)}
+  .alert-strip p{margin:0;color:var(--band-muted);font-size:var(--text-sm);max-width:640px;position:relative;z-index:var(--z-base)}
+  .alert-strip .btn{white-space:nowrap;position:relative;z-index:var(--z-base)}
+
+  /* --- Organismes --- */
+  .institution-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--space-3)}
+  .institution{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:var(--space-4);text-align:center;transition:border-color var(--t-fast) var(--ease),transform var(--t-fast) var(--ease)}
+  .institution:hover{border-color:var(--color-primary);transform:translateY(-2px)}
+  .institution strong{font-size:var(--text-xs);display:block;font-weight:750}
+  .institution small{font-family:var(--font-mono);font-size:10px;color:var(--text-muted)}
+
+  /* --- Méthode --- */
+  .method{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4)}
+  .method article{padding:var(--space-5);border-left:3px solid var(--color-primary);background:var(--bg-surface);border-radius:0 var(--radius-md) var(--radius-md) 0;box-shadow:var(--shadow-sm)}
+  .method b{font-size:var(--text-sm);display:flex;align-items:center;gap:var(--space-2)}
+  .method b .num{font-family:var(--font-mono);font-size:11px;color:var(--color-primary);background:var(--color-primary-soft);border-radius:var(--radius-full);width:22px;height:22px;display:grid;place-items:center;flex:none}
+  .method p{font-size:var(--text-xs);color:var(--text-muted);margin:var(--space-2) 0 0;line-height:1.6}
+
+  /* --- Situations --- */
+  .sit-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-4)}
+  .sit-card{
+    background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);
+    padding:var(--space-5);text-align:left;position:relative;min-height:150px;
+    transition:transform var(--t-fast) var(--ease),box-shadow var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease),background var(--t-fast) var(--ease);
+  }
+  .sit-card:hover,.sit-card.active{border-color:var(--color-primary);box-shadow:var(--shadow-md);transform:translateY(-3px)}
+  .sit-card.active{background:var(--color-primary-soft)}
+  .sit-card .ico-\boxed{width:44px;height:44px;border-radius:13px;background:var(--color-primary-soft);color:var(--color-primary);display:grid;place-items:center;font-size:21px;margin-bottom:var(--space-3)}
+  .sit-card strong{display:block;font-size:var(--text-sm);margin-bottom:var(--space-2);letter-spacing:-.01em}
+  .sit-card small{color:var(--text-muted);font-size:var(--text-xs);line-height:1.55;display:block}
+  .sit-card .go{position:absolute;right:var(--space-4);top:var(--space-4);font-family:var(--font-mono);font-size:10px;color:var(--color-primary);font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:0;transition:opacity var(--t-fast) var(--ease)}
+  .sit-card:hover .go,.sit-card.active .go{opacity:1}
+  .sit-path{margin-top:var(--space-4);background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-6);display:none;box-shadow:var(--shadow-sm)}
+  .sit-path.open{display:block;animation:fadeUp var(--t-mid) var(--ease)}
+  .sit-path h3{margin:0 0 var(--space-2);font-size:var(--text-xl);display:flex;align-items:center;gap:var(--space-3)}
+  .sit-path h3 .ico{color:var(--color-primary)}
+  .sit-path>p{margin:0 0 var(--space-5);color:var(--text-secondary);font-size:var(--text-sm);max-width:760px}
+  .steps{display:grid;gap:var(--space-3)}
+  .step{display:grid;grid-template-columns:28px 1fr;gap:var(--space-4);padding:var(--space-4);background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-md)}
+  .step .num{width:26px;height:26px;border-radius:50%;background:var(--color-primary);color:var(--on-primary);display:grid;place-items:center;font-family:var(--font-mono);font-size:12px;font-weight:700}
+  .step b{font-size:var(--text-sm)}
+  .step p{margin:4px 0 var(--space-3);font-size:var(--text-xs);color:var(--text-secondary);line-height:1.6}
+  .step-src{display:flex;gap:var(--space-2);flex-wrap:wrap}
+  .step-src button{border:1px solid var(--border);background:var(--bg-surface);border-radius:var(--radius-md);padding:8px 12px;font-size:var(--text-xs);font-weight:700;color:var(--text-secondary);display:inline-flex;align-items:center;gap:6px;transition:transform var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease),color var(--t-fast) var(--ease)}
+  .step-src button:hover{color:var(--color-primary);border-color:var(--color-primary);transform:translateY(-1px)}
+  .step-src button.act{background:var(--color-primary);border-color:var(--color-primary);color:var(--on-primary)}
+  .step-src button.act:hover{color:var(--on-primary);background:var(--color-primary-hover)}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* --- Visite guidée --- */
+  .tour-layer{position:fixed;inset:0;z-index:var(--z-tour);display:none}
+  .tour-layer.open{display:block}
+  .tour-spot{position:absolute;border:2px solid var(--green-400);border-radius:var(--radius-lg);box-shadow:0 0 0 9999px rgba(7,13,24,.7),0 0 30px rgba(63,211,180,.5);transition:all var(--t-mid) var(--ease);pointer-events:none}
+  .tour-bubble{position:absolute;width:340px;max-width:calc(100vw - 32px);background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-5);box-shadow:var(--shadow-lg);pointer-events:auto;transition:all var(--t-mid) var(--ease);color:var(--text-primary)}
+  .tour-bubble .k{font-family:var(--font-mono);font-size:10px;color:var(--color-primary);font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+  .tour-bubble h4{margin:var(--space-2) 0;font-size:var(--text-lg)}
+  .tour-bubble p{margin:0;font-size:var(--text-xs);color:var(--text-secondary);line-height:1.65}
+  .tour-nav{display:flex;justify-content:space-between;align-items:center;margin-top:var(--space-4);gap:var(--space-3)}
+  .tour-nav .dots{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);font-weight:700}
+  .tour-nav .grp{display:flex;gap:var(--space-2)}
+  .tour-nav button{border:1px solid var(--border);background:var(--bg-surface);border-radius:var(--radius-md);padding:8px 13px;font-size:var(--text-xs);font-weight:800;color:var(--text-secondary);transition:border-color var(--t-fast) var(--ease),color var(--t-fast) var(--ease)}
+  .tour-nav button:hover{border-color:var(--color-primary);color:var(--color-primary)}
+  .tour-nav button.next{background:var(--color-primary);border-color:var(--color-primary);color:var(--on-primary)}
+  .tour-nav button.next:hover{background:var(--color-primary-hover);color:var(--on-primary)}
+
+  /* --- Pied de page --- */
+  footer{background:var(--band-bg);color:var(--band-text);margin-top:var(--space-16);padding:var(--space-12) 0 var(--space-6)}
+  .footergrid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:var(--space-10)}
+  .footerbrand p{font-size:var(--text-xs);color:var(--band-muted);max-width:300px;line-height:1.7;margin-top:var(--space-4)}
+  .footercol strong{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#FFFFFF;display:block;margin-bottom:var(--space-4)}
+  .footercol a{display:block;font-size:var(--text-xs);color:var(--band-muted);margin:var(--space-3) 0;transition:color var(--t-fast) var(--ease)}
+  .footercol a:hover{color:var(--band-accent)}
+  .footnote{border-top:1px solid var(--band-line);margin-top:var(--space-10);padding-top:var(--space-5);color:var(--band-muted);font-size:10px;display:flex;justify-content:space-between;gap:var(--space-6);line-height:1.7}
+  .footnote span{max-width:640px}
+  footer .brandname{color:#FFFFFF}
+  footer .brandname span{color:var(--band-accent)}
+  footer .brand small{color:var(--band-muted)}
+
+  /* --- Modale --- */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(7,13,24,.72);z-index:var(--z-modal);display:none;align-items:center;justify-content:center;padding:var(--space-5);backdrop-filter:blur(3px)}
+  .modal-backdrop.open{display:flex;animation:fadeUp var(--t-mid) var(--ease)}
+  .modal{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-xl);max-width:660px;width:100%;max-height:88vh;overflow:auto;box-shadow:var(--shadow-lg)}
+  .modal-head{padding:var(--space-6);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:var(--space-5);align-items:flex-start}
+  .modal-head h2{font-size:var(--text-xl);margin:var(--space-2) 0 0}
+  .close{border:0;background:var(--bg-inset);color:var(--text-secondary);width:34px;height:34px;border-radius:var(--radius-md);display:grid;place-items:center;font-size:17px;flex:none;transition:background var(--t-fast) var(--ease),color var(--t-fast) var(--ease)}
+  .close:hover{background:var(--pill-registre-bg);color:var(--pill-registre-fg)}
+  .modal-body{padding:var(--space-6)}
+  .modal-body p{font-size:var(--text-sm);color:var(--text-secondary);line-height:1.65}
+  .modal-body p b{color:var(--text-primary)}
+  .modal-body .url{word-break:break-all;font-family:var(--font-mono);font-size:var(--text-xs);color:var(--text-secondary);background:var(--bg-inset);padding:var(--space-3);border-radius:var(--radius-sm);display:block}
+  .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3);margin:var(--space-5) 0}
+  .detail-field{background:var(--bg-inset);padding:var(--space-3) var(--space-4);border-radius:var(--radius-md);border:1px solid var(--border)}
+  .detail-field small{display:block;color:var(--text-muted);font-family:var(--font-mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:3px}
+  .detail-field strong{font-size:var(--text-xs);font-weight:700;line-height:1.5;display:block}
+  .detail-field .link{font-family:var(--font-mono);font-size:10px;color:var(--text-muted);word-break:break-all;font-weight:400}
+  .modal-actions{display:flex;gap:var(--space-3);flex-wrap:wrap;margin-top:var(--space-6)}
+
+  /* --- Toast / favoris --- */
+  .toast{position:fixed;bottom:var(--space-6);right:var(--space-6);background:var(--navy-800);color:#FFFFFF;padding:var(--space-3) var(--space-5);border-radius:var(--radius-md);font-size:var(--text-xs);font-weight:650;box-shadow:var(--shadow-lg);opacity:0;transform:translateY(12px);transition:opacity var(--t-mid) var(--ease),transform var(--t-mid) var(--ease);z-index:var(--z-toast);pointer-events:none;max-width:340px}
+  .toast.show{opacity:1;transform:none}
+  .favbar{position:fixed;left:50%;transform:translateX(-50%) translateY(180%);bottom:var(--space-5);background:var(--band-bg);color:#FFFFFF;border:1px solid var(--band-line);border-radius:var(--radius-lg);padding:var(--space-3) var(--space-5);display:flex;gap:var(--space-4);align-items:center;box-shadow:var(--shadow-band);z-index:var(--z-fav);transition:transform var(--t-mid) var(--ease);font-size:var(--text-xs);font-weight:650}
+  .favbar.show{transform:translateX(-50%) translateY(0)}
+  .favbar .fav-count{display:flex;align-items:center;gap:var(--space-2);font-family:var(--font-mono);color:var(--band-accent)}
+  .favbar button{border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.08);color:#FFFFFF;border-radius:var(--radius-md);padding:8px 12px;font-size:var(--text-xs);font-weight:750;display:inline-flex;align-items:center;gap:6px;transition:background var(--t-fast) var(--ease)}
+  .favbar button:hover{background:rgba(255,255,255,.18)}
+}
+
+/* ============================== UTILITAIRES ============================== */
+@layer utilities{
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+  .skip{position:absolute;left:-9999px;top:0;z-index:var(--z-toast);background:var(--color-primary);color:var(--on-primary);padding:var(--space-3) var(--space-5);border-radius:0 0 var(--radius-md) 0;font-weight:750;font-size:var(--text-sm)}
+  .skip:focus{left:0}
+  :focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    *,*::before,*::after{animation-duration:.01ms;animation-iteration-count:1;transition-duration:.01ms}
+  }
+
+  @media (max-width:900px){
+    .navlinks{display:none;position:absolute;top:calc(100% + var(--space-2));left:0;right:0;flex-direction:column;gap:0;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:var(--space-2);z-index:var(--z-sticky)}
+    .navlinks.show{display:flex}
+    .navlinks a{padding:var(--space-3) var(--space-4);border-bottom:0;border-radius:var(--radius-sm);font-size:var(--text-sm)}
+    .navlinks a:hover{background:var(--color-primary-soft);border-bottom-color:transparent}
+    .mobilemenu{display:grid;place-items:center}
+    .hero-grid{grid-template-columns:1fr;gap:var(--space-8)}
+    .hero-panel{max-width:640px}
+    .domain-grid{grid-template-columns:repeat(3,1fr)}
+    .sit-grid{grid-template-columns:repeat(2,1fr)}
+    .content-layout{grid-template-columns:1fr}
+    .filters{position:static;display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4)}
+    .filters h3{grid-column:1/-1;margin-bottom:0}
+    .filter-group{border-top:0;padding:0}
+    .institution-grid{grid-template-columns:repeat(3,1fr)}
+    .type-grid,.guides,.method{grid-template-columns:repeat(2,1fr)}
+    .tour-bubble{width:320px}
+    .section h2{font-size:var(--text-2xl)}
+  }
+
+  @media (max-width:620px){
+    :root{--layout-gutter:14px;--header-h:62px}
+    .toplinks{display:none}
+    .brand{min-width:0}
+    .brandname{font-size:var(--text-base)}
+    .brandname small{display:none}
+    .brandmark{width:37px;height:37px;font-size:19px}
+    .navright .btn:not(.primary){display:none}
+    .hero{padding:var(--space-12) 0}
+    .hero h1{font-size:2.3rem}
+    .hero p{font-size:var(--text-base)}
+    .hero-actions .btn{width:100%}
+    .search-wrap{margin-top:calc(var(--space-6) * -1)}
+    .searchbox{flex-wrap:wrap}
+    .searchbox input{width:100%;flex-basis:100%;order:2;font-size:var(--text-sm)}
+    .searchbox .searchicon{order:1}
+    .searchbox .btn{order:3;width:100%}
+    .stats{grid-template-columns:repeat(2,1fr);gap:var(--space-3);margin:var(--space-8) 0 var(--space-12)}
+    .stat{padding:var(--space-4)}
+    .stat strong{font-size:var(--text-2xl)}
+    .section{padding-bottom:var(--space-12)}
+    .section-head{display:block}
+    .section-head .textlink,.section-head .linkbtn{display:inline-flex;margin-top:var(--space-4)}
+    .section h2{font-size:var(--text-2xl)}
+    .domain-grid{grid-template-columns:repeat(2,1fr);gap:var(--space-3)}
+    .domain{padding:var(--space-4);min-height:128px}
+    .filters{grid-template-columns:1fr 1fr;padding:var(--space-4)}
+    .filter-group:last-child{grid-column:1/-1}
+    .resource{grid-template-columns:44px 1fr;padding:var(--space-4);gap:var(--space-3)}
+    .resource-logo{width:44px;height:44px;font-size:19px}
+    .resource-actions{grid-column:2;flex-direction:row;align-items:center}
+    .type-grid,.guides,.method,.sit-grid{grid-template-columns:1fr}
+    .alert-strip{display:block}
+    .alert-strip .btn{display:inline-flex;margin-top:var(--space-5)}
+    .institution-grid{grid-template-columns:repeat(2,1fr)}
+    .footergrid{grid-template-columns:1fr 1fr;gap:var(--space-6)}
+    .footerbrand{grid-column:1/-1}
+    .footnote{display:block}
+    .footnote span{display:block;margin-top:var(--space-3);max-width:none}
+    .detail-grid{grid-template-columns:1fr}
+    .modal-head,.modal-body{padding:var(--space-5)}
+    .favbar{left:var(--space-4);right:var(--space-4);transform:translateY(180%);font-size:11px;justify-content:center;flex-wrap:wrap;gap:var(--space-3);padding:var(--space-3)}
+    .favbar.show{transform:translateY(0)}
+    .tour-bubble{width:calc(100vw - 30px);padding:var(--space-4)}
+    .step{grid-template-columns:24px 1fr;gap:var(--space-3);padding:var(--space-3)}
+    .toast{left:var(--space-4);right:var(--space-4);max-width:none;text-align:center}
+  }
+}
+
+</style>
+<script>try{var t=localStorage.getItem("fsi_theme");if(!t){t=(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light"}document.documentElement.setAttribute("data-theme",t)}catch(e){document.documentElement.setAttribute("data-theme","light")}</script>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden"><symbol id="i-scale" viewBox="0 0 24 24">
+      <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
+      <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
+      <path d="M7 21h10" />
+      <path d="M12 3v18" />
+      <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2" />
+    </symbol><symbol id="i-scroll-text" viewBox="0 0 24 24">
+      <path d="M15 12h-5" />
+      <path d="M15 8h-5" />
+      <path d="M19 17V5a2 2 0 0 0-2-2H4" />
+      <path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3" />
+    </symbol><symbol id="i-landmark" viewBox="0 0 24 24">
+      <line x1="3" x2="21" y1="22" y2="22" />
+      <line x1="6" x2="6" y1="18" y2="11" />
+      <line x1="10" x2="10" y1="18" y2="11" />
+      <line x1="14" x2="14" y1="18" y2="11" />
+      <line x1="18" x2="18" y1="18" y2="11" />
+      <polygon points="12 2 20 7 4 7" />
+    </symbol><symbol id="i-folders" viewBox="0 0 24 24">
+      <path d="M20 17a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3.9a2 2 0 0 1-1.69-.9l-.81-1.2a2 2 0 0 0-1.67-.9H8a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2Z" />
+      <path d="M2 8v11a2 2 0 0 0 2 2h14" />
+    </symbol><symbol id="i-search" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.3-4.3" />
+    </symbol><symbol id="i-microscope" viewBox="0 0 24 24">
+      <path d="M6 18h8" />
+      <path d="M3 22h18" />
+      <path d="M14 22a7 7 0 1 0 0-14h-1" />
+      <path d="M9 14h2" />
+      <path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z" />
+      <path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3" />
+    </symbol><symbol id="i-truck" viewBox="0 0 24 24">
+      <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" />
+      <path d="M15 18H9" />
+      <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" />
+      <circle cx="17" cy="18" r="2" />
+      <circle cx="7" cy="18" r="2" />
+    </symbol><symbol id="i-tag" viewBox="0 0 24 24">
+      <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z" />
+      <circle cx="7.5" cy="7.5" r=".5" fill="currentColor" />
+    </symbol><symbol id="i-clipboard-list" viewBox="0 0 24 24">
+      <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+      <path d="M12 11h4" />
+      <path d="M12 16h4" />
+      <path d="M8 11h.01" />
+      <path d="M8 16h.01" />
+    </symbol><symbol id="i-pen-line" viewBox="0 0 24 24">
+      <path d="M12 20h9" />
+      <path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z" />
+    </symbol><symbol id="i-library" viewBox="0 0 24 24">
+      <path d="m16 6 4 14" />
+      <path d="M12 6v14" />
+      <path d="M8 8v12" />
+      <path d="M4 4v16" />
+    </symbol><symbol id="i-book" viewBox="0 0 24 24">
+      <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20" />
+    </symbol><symbol id="i-book-open" viewBox="0 0 24 24">
+      <path d="M12 7v14" />
+      <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z" />
+    </symbol><symbol id="i-flask-conical" viewBox="0 0 24 24">
+      <path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2" />
+      <path d="M6.453 15h11.094" />
+      <path d="M8.5 2h7" />
+    </symbol><symbol id="i-biohazard" viewBox="0 0 24 24">
+      <circle cx="12" cy="11.9" r="2" />
+      <path d="M6.7 3.4c-.9 2.5 0 5.2 2.2 6.7C6.5 9 3.7 9.6 2 11.6" />
+      <path d="m8.9 10.1 1.4.8" />
+      <path d="M17.3 3.4c.9 2.5 0 5.2-2.2 6.7 2.4-1.2 5.2-.6 6.9 1.5" />
+      <path d="m15.1 10.1-1.4.8" />
+      <path d="M16.7 20.8c-2.6-.4-4.6-2.6-4.7-5.3-.2 2.6-2.1 4.8-4.7 5.2" />
+      <path d="M12 13.9v1.6" />
+      <path d="M13.5 5.4c-1-.2-2-.2-3 0" />
+      <path d="M17 16.4c.7-.7 1.2-1.6 1.5-2.5" />
+      <path d="M5.5 13.9c.3.9.8 1.8 1.5 2.5" />
+    </symbol><symbol id="i-dna" viewBox="0 0 24 24">
+      <path d="m10 16 1.5 1.5" />
+      <path d="m14 8-1.5-1.5" />
+      <path d="M15 2c-1.798 1.998-2.518 3.995-2.807 5.993" />
+      <path d="m16.5 10.5 1 1" />
+      <path d="m17 6-2.891-2.891" />
+      <path d="M2 15c6.667-6 13.333 0 20-6" />
+      <path d="m20 9 .891.891" />
+      <path d="M3.109 14.109 4 15" />
+      <path d="m6.5 12.5 1 1" />
+      <path d="m7 18 2.891 2.891" />
+      <path d="M9 22c1.798-1.998 2.518-3.995 2.807-5.993" />
+    </symbol><symbol id="i-map" viewBox="0 0 24 24">
+      <path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z" />
+      <path d="M15 5.764v15" />
+      <path d="M9 3.236v15" />
+    </symbol><symbol id="i-droplet" viewBox="0 0 24 24">
+      <path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z" />
+    </symbol><symbol id="i-droplets" viewBox="0 0 24 24">
+      <path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z" />
+      <path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97" />
+    </symbol><symbol id="i-siren" viewBox="0 0 24 24">
+      <path d="M7 18v-6a5 5 0 1 1 10 0v6" />
+      <path d="M5 21a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-1a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2z" />
+      <path d="M21 12h1" />
+      <path d="M18.5 4.5 18 5" />
+      <path d="M2 12h1" />
+      <path d="M12 2v1" />
+      <path d="m4.929 4.929.707.707" />
+      <path d="M12 12v6" />
+    </symbol><symbol id="i-globe" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+      <path d="M2 12h20" />
+    </symbol><symbol id="i-megaphone" viewBox="0 0 24 24">
+      <path d="m3 11 18-5v12L3 14v-3z" />
+      <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
+    </symbol><symbol id="i-newspaper" viewBox="0 0 24 24">
+      <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" />
+      <path d="M18 14h-8" />
+      <path d="M15 18h-5" />
+      <path d="M10 6h8v4h-8V6Z" />
+    </symbol><symbol id="i-test-tube" viewBox="0 0 24 24">
+      <path d="M14.5 2v17.5c0 1.4-1.1 2.5-2.5 2.5c-1.4 0-2.5-1.1-2.5-2.5V2" />
+      <path d="M8.5 2h7" />
+      <path d="M14.5 16h-5" />
+    </symbol><symbol id="i-beaker" viewBox="0 0 24 24">
+      <path d="M4.5 3h15" />
+      <path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3" />
+      <path d="M6 14h12" />
+    </symbol><symbol id="i-wrench" viewBox="0 0 24 24">
+      <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+    </symbol><symbol id="i-package" viewBox="0 0 24 24">
+      <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z" />
+      <path d="M12 22V12" />
+      <path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7" />
+      <path d="m7.5 4.27 9 5.15" />
+    </symbol><symbol id="i-chart-column" viewBox="0 0 24 24">
+      <path d="M3 3v16a2 2 0 0 0 2 2h16" />
+      <path d="M18 17V9" />
+      <path d="M13 17V5" />
+      <path d="M8 17v-3" />
+    </symbol><symbol id="i-paw-print" viewBox="0 0 24 24">
+      <circle cx="11" cy="4" r="2" />
+      <circle cx="18" cy="8" r="2" />
+      <circle cx="20" cy="16" r="2" />
+      <path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z" />
+    </symbol><symbol id="i-stethoscope" viewBox="0 0 24 24">
+      <path d="M11 2v2" />
+      <path d="M5 2v2" />
+      <path d="M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1" />
+      <path d="M8 15a6 6 0 0 0 12 0v-3" />
+      <circle cx="20" cy="10" r="2" />
+    </symbol><symbol id="i-wheat" viewBox="0 0 24 24">
+      <path d="M2 22 16 8" />
+      <path d="M3.47 12.53 5 11l1.53 1.53a3.5 3.5 0 0 1 0 4.94L5 19l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z" />
+      <path d="M7.47 8.53 9 7l1.53 1.53a3.5 3.5 0 0 1 0 4.94L9 15l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z" />
+      <path d="M11.47 4.53 13 3l1.53 1.53a3.5 3.5 0 0 1 0 4.94L13 11l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z" />
+      <path d="M20 2h2v2a4 4 0 0 1-4 4h-2V6a4 4 0 0 1 4-4Z" />
+      <path d="M11.47 17.47 13 19l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L5 19l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" />
+      <path d="M15.47 13.47 17 15l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L9 15l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" />
+      <path d="M19.47 9.47 21 11l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L13 11l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" />
+    </symbol><symbol id="i-factory" viewBox="0 0 24 24">
+      <path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" />
+      <path d="M17 18h1" />
+      <path d="M12 18h1" />
+      <path d="M7 18h1" />
+    </symbol><symbol id="i-utensils" viewBox="0 0 24 24">
+      <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" />
+      <path d="M7 2v20" />
+      <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" />
+    </symbol><symbol id="i-award" viewBox="0 0 24 24">
+      <path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526" />
+      <circle cx="12" cy="8" r="6" />
+    </symbol><symbol id="i-leaf" viewBox="0 0 24 24">
+      <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+      <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+    </symbol><symbol id="i-sprout" viewBox="0 0 24 24">
+      <path d="M7 20h10" />
+      <path d="M10 20c5.5-2.5.8-6.4 3-10" />
+      <path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z" />
+      <path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z" />
+    </symbol><symbol id="i-flower" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M12 16.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 1 1 12 7.5a4.5 4.5 0 1 1 4.5 4.5 4.5 4.5 0 1 1-4.5 4.5" />
+      <path d="M12 7.5V9" />
+      <path d="M7.5 12H9" />
+      <path d="M16.5 12H15" />
+      <path d="M12 16.5V15" />
+      <path d="m8 8 1.88 1.88" />
+      <path d="M14.12 9.88 16 8" />
+      <path d="m8 16 1.88-1.88" />
+      <path d="M14.12 14.12 16 16" />
+    </symbol><symbol id="i-medal" viewBox="0 0 24 24">
+      <path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15" />
+      <path d="M11 12 5.12 2.2" />
+      <path d="m13 12 5.88-9.8" />
+      <path d="M8 7h8" />
+      <circle cx="12" cy="17" r="5" />
+      <path d="M12 18v-2h-.5" />
+    </symbol><symbol id="i-braces" viewBox="0 0 24 24">
+      <path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5c0 1.1.9 2 2 2h1" />
+      <path d="M16 21h1a2 2 0 0 0 2-2v-5c0-1.1.9-2 2-2a2 2 0 0 1-2-2V5a2 2 0 0 0-2-2h-1" />
+    </symbol><symbol id="i-file-text" viewBox="0 0 24 24">
+      <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+      <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+      <path d="M10 9H8" />
+      <path d="M16 13H8" />
+      <path d="M16 17H8" />
+    </symbol><symbol id="i-download" viewBox="0 0 24 24">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" />
+      <line x1="12" x2="12" y1="15" y2="3" />
+    </symbol><symbol id="i-target" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" />
+      <circle cx="12" cy="12" r="6" />
+      <circle cx="12" cy="12" r="2" />
+    </symbol><symbol id="i-handshake" viewBox="0 0 24 24">
+      <path d="m11 17 2 2a1 1 0 1 0 3-3" />
+      <path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4" />
+      <path d="m21 3 1 11h-2" />
+      <path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3" />
+      <path d="M3 4h8" />
+    </symbol><symbol id="i-store" viewBox="0 0 24 24">
+      <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7" />
+      <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+      <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4" />
+      <path d="M2 7h20" />
+      <path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7" />
+    </symbol><symbol id="i-printer" viewBox="0 0 24 24">
+      <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+      <path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6" />
+      <rect x="6" y="14" width="12" height="8" rx="1" />
+    </symbol><symbol id="i-salad" viewBox="0 0 24 24">
+      <path d="M7 21h10" />
+      <path d="M12 21a9 9 0 0 0 9-9H3a9 9 0 0 0 9 9Z" />
+      <path d="M11.38 12a2.4 2.4 0 0 1-.4-4.77 2.4 2.4 0 0 1 3.2-2.77 2.4 2.4 0 0 1 3.47-.63 2.4 2.4 0 0 1 3.37 3.37 2.4 2.4 0 0 1-1.1 3.7 2.51 2.51 0 0 1 .03 1.1" />
+      <path d="m13 12 4-4" />
+      <path d="M10.9 7.25A3.99 3.99 0 0 0 4 10c0 .73.2 1.41.54 2" />
+    </symbol><symbol id="i-shield-check" viewBox="0 0 24 24">
+      <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+      <path d="m9 12 2 2 4-4" />
+    </symbol><symbol id="i-menu" viewBox="0 0 24 24">
+      <line x1="4" x2="20" y1="12" y2="12" />
+      <line x1="4" x2="20" y1="6" y2="6" />
+      <line x1="4" x2="20" y1="18" y2="18" />
+    </symbol><symbol id="i-layout-grid" viewBox="0 0 24 24">
+      <rect width="7" height="7" x="3" y="3" rx="1" />
+      <rect width="7" height="7" x="14" y="3" rx="1" />
+      <rect width="7" height="7" x="14" y="14" rx="1" />
+      <rect width="7" height="7" x="3" y="14" rx="1" />
+    </symbol><symbol id="i-rotate-ccw" viewBox="0 0 24 24">
+      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+      <path d="M3 3v5h5" />
+    </symbol><symbol id="i-star" viewBox="0 0 24 24">
+      <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
+    </symbol><symbol id="i-check" viewBox="0 0 24 24">
+      <path d="M20 6 9 17l-5-5" />
+    </symbol><symbol id="i-flag" viewBox="0 0 24 24">
+      <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+      <line x1="4" x2="4" y1="22" y2="15" />
+    </symbol><symbol id="i-clock" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" />
+      <polyline points="12 6 12 12 16 14" />
+    </symbol><symbol id="i-play" viewBox="0 0 24 24">
+      <polygon points="6 3 20 12 6 21 6 3" />
+    </symbol><symbol id="i-x" viewBox="0 0 24 24">
+      <path d="M18 6 6 18" />
+      <path d="m6 6 12 12" />
+    </symbol><symbol id="i-sun" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2" />
+      <path d="M12 20v2" />
+      <path d="m4.93 4.93 1.41 1.41" />
+      <path d="m17.66 17.66 1.41 1.41" />
+      <path d="M2 12h2" />
+      <path d="M20 12h2" />
+      <path d="m6.34 17.66-1.41 1.41" />
+      <path d="m19.07 4.93-1.41 1.41" />
+    </symbol><symbol id="i-moon" viewBox="0 0 24 24">
+      <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+    </symbol>
+      <symbol id="i-arrow-up-right" viewBox="0 0 24 24">
+      <path d="M7 7h10v10" />
+      <path d="M7 17 17 7" />
+    </symbol></svg>
+<a class="skip" href="#situations">Aller au contenu principal</a>
+<div class="topbar"><div class="container"><strong>FOOD SAFETY INTELLIGENCE</strong><div class="toplinks"><a href="#method">Notre méthode</a><a href="#sources">Sources officielles</a><a href="#guides">Guides professionnels</a><span>FR · Union européenne</span></div></div></div>
+<header><div class="container nav">
+<a class="brand" href="#accueil" aria-label="Food Safety Intelligence accueil"><div class="brandmark">FS</div><div class="brandname">Food Safety <span>Intelligence</span><small>Official knowledge & data</small></div></a>
+<nav class="navlinks" id="navlinks"><a href="#situations">Par situations</a><a href="#explorer">Domaines</a><a href="#sources">Sources</a><a href="#method">Méthodologie</a></nav>
+<div class="navright"><a class="btn" href="#sources">Voir le catalogue</a><a class="btn primary" href="#explorer">Explorer les données ↗</a><button class="theme-toggle" id="themeToggle" type="button" aria-label="Basculer entre le thème clair et le thème sombre" title="Thème clair / sombre"><svg class="ico ico-moon" aria-hidden="true"><use href="#i-moon"/></svg><svg class="ico ico-sun" aria-hidden="true"><use href="#i-sun"/></svg></button><button class="btn mobilemenu" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="navlinks" onclick="toggleMenu()"><svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg></button></div>
+</div></header>
+<main id="accueil">
+<section class="hero"><div class="container hero-grid">
+<div><div class="eyebrow"><span class="pulse"></span> La connaissance officielle, connectée</div>
+<h1>La sécurité des aliments.<br><em>Une information plus claire.</em></h1>
+<p>Explorez les données, textes réglementaires, alertes sanitaires, référentiels et guides professionnels issus des organismes officiels européens et nationaux. Une porte d’entrée unique pour comprendre, anticiper et agir.</p>
+<div class="hero-actions"><a class="btn primary" href="#situations">Entrer par ma situation&nbsp; →</a><button class="btn ghost" onclick="startTour()"><svg class="ico" aria-hidden="true"><use href="#i-play"/></svg> Visite guidée (2 min)</button><a class="btn ghost" href="#sources">Voir les 50 sources</a></div>
+<div class="hero-foot"><span><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><b>Sources institutionnelles</b></span><span><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><b>Liens vérifiés</b></span><span><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><b>Europe + France</b></span></div></div>
+<div class="hero-panel"><div class="panel-head"><strong>À surveiller dans l’écosystème</strong><span class="live">VEILLE ÉDITORIALE</span></div>
+<div class="signal"><div class="signal-icon"><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg></div><div><strong>Réglementation européenne</strong><small>Textes, modifications et dates d’application</small></div><span class="tag">EUR-LEX</span></div>
+<div class="signal"><div class="signal-icon"><svg class="ico" aria-hidden="true"><use href="#i-flask-conical"/></svg></div><div><strong>Risques microbiologiques</strong><small>Critères, avis scientifiques et surveillance</small></div><span class="tag">EFSA</span></div>
+<div class="signal"><div class="signal-icon"><svg class="ico" aria-hidden="true"><use href="#i-siren"/></svg></div><div><strong>Alertes & non-conformités</strong><small>Notifications et rappels de produits</small></div><span class="tag">RASFF</span></div>
+<div class="signal"><div class="signal-icon"><svg class="ico" aria-hidden="true"><use href="#i-search"/></svg></div><div><strong>Fraudes alimentaires</strong><small>Suspicion, falsification et tendances</small></div><span class="tag">DG SANTE</span></div>
+</div></div></section>
+<div class="container search-wrap"><div class="searchbox"><span class="searchicon"><svg class="ico" aria-hidden="true"><use href="#i-search"/></svg></span><input id="globalSearch" type="search" placeholder="Rechercher une source, un sujet, une réglementation, un métier…"><button class="btn primary" onclick="runSearch()">Rechercher</button></div><div class="quicksearch">Recherches fréquentes : <button onclick="quick('allergènes')">Allergènes</button><button onclick="quick('Listeria')">Listeria</button><button onclick="quick('matériaux au contact')">Matériaux au contact</button><button onclick="quick('fraude')">Fraude alimentaire</button><button onclick="quick('eau potable')">Eau potable</button></div></div>
+<section class="section container" id="situations"><div class="section-head"><div><div class="kicker">Je suis…</div><h2>Entrez par votre situation, pas par un catalogue</h2><p>Quatre situations courantes. Chacune ouvre un chemin de 4 étapes, dans l’ordre, avec la source officielle à ouvrir à chaque étape — de quoi préparer une réunion ou répondre à un contrôle sans se perdre.</p></div><button class="linkbtn" onclick="startTour()"><svg class="ico" aria-hidden="true"><use href="#i-play"/></svg> Visite guidée du portail (2 min)</button></div>
+<div class="sit-grid" id="sitGrid"></div>
+<div class="sit-path" id="sitPath"></div>
+</section>
+<div class="container"><div class="stats"><div class="stat"><strong id="stDomains">15</strong><span>Domaines de connaissance</span></div><div class="stat"><strong id="stSources">50</strong><span>Sources officielles référencées</span></div><div class="stat"><strong id="stVerified">45</strong><i id="stVerifiedNote">liens vérifiés le 21/11/2026</i></div><div class="stat"><strong>UE + FR</strong><span>Périmètre géographique</span></div></div></div>
+<section class="section container" id="explorer"><div class="section-head"><div><div class="kicker">Explorer par thématique</div><h2>Tout l’écosystème de la sécurité des aliments</h2><p>Accédez aux ressources par domaine, puis affinez votre recherche selon le type de source, l’organisme ou le secteur professionnel.</p></div><a class="textlink" href="#sources">Voir toutes les ressources →</a></div>
+<div class="domain-grid" id="domainGrid">
+<button class="domain active" data-domain="all" onclick="setDomain('all')"><span class="count">Tout</span><div class="ico-box"><svg class="ico" aria-hidden="true"><use href="#i-layout-grid"/></svg></div><strong>Tous les domaines</strong><small>Vue transversale du catalogue</small></button>
+<button class="domain" data-domain="reg" onclick="setDomain('reg')"><div class="ico-box"><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg></div><strong>Réglementation</strong><small>Textes et droit alimentaire</small></button>
+<button class="domain" data-domain="label" onclick="setDomain('label')"><div class="ico-box"><svg class="ico" aria-hidden="true"><use href="#i-tag"/></svg></div><strong>Étiquetage & information</strong><small>Allergènes, origine, nutrition</small></button>
+<button class="domain" data-domain="guide" onclick="setDomain('guide')"><div class="ico-box"><svg class="ico" aria-hidden="true"><use href="#i-book"/></svg></div><strong>Guides & bonnes pratiques</strong><small>GBPH et guides métiers</small></button>
+<button class="domain" data-domain="micro" onclick="setDomain('micro')"><div class="ico-box"><svg class="ico" aria-hidden="true"><use href="#i-flask-conical"/></svg></div><strong>Microbiologie</strong><small>Critères et surveillance</small></button>
+<button class="domain" data-domain="water" onclick="setDomain('water')"><div class="ico-box"><svg class="ico" aria-hidden="true"><use href="#i-droplet"/></svg></div><strong>Eau & environnement</strong><small>Eau potable et milieux</small></button>
+<button class="domain" data-domain="alerts" onclick="setDomain('alerts')"><div class="ico-box"><svg class="ico" aria-hidden="true"><use href="#i-siren"/></svg></div><strong>Alertes & rappels</strong><small>Notifications et retraits</small></button>
+<button class="domain" data-domain="chem" onclick="setDomain('chem')"><div class="ico-box"><svg class="ico" aria-hidden="true"><use href="#i-test-tube"/></svg></div><strong>Risques chimiques</strong><small>Contaminants et résidus</small></button>
+<button class="domain" data-domain="fcm" onclick="setDomain('fcm')"><div class="ico-box"><svg class="ico" aria-hidden="true"><use href="#i-package"/></svg></div><strong>Matériaux au contact</strong><small>FCM et emballages</small></button>
+<button class="domain" data-domain="fraud" onclick="setDomain('fraud')"><div class="ico-box"><svg class="ico" aria-hidden="true"><use href="#i-search"/></svg></div><strong>Fraude alimentaire</strong><small>Suspicion et falsification</small></button>
+<button class="domain" data-domain="animal" onclick="setDomain('animal')"><div class="ico-box"><svg class="ico" aria-hidden="true"><use href="#i-paw-print"/></svg></div><strong>Santé animale & aliments</strong><small>Élevage, feed, zoonoses</small></button>
+<button class="domain" data-domain="nutrition" onclick="setDomain('nutrition')"><div class="ico-box"><svg class="ico" aria-hidden="true"><use href="#i-salad"/></svg></div><strong>Nutrition & composition</strong><small>Allégations et données</small></button>
+<button class="domain" data-domain="control" onclick="setDomain('control')"><div class="ico-box"><svg class="ico" aria-hidden="true"><use href="#i-shield-check"/></svg></div><strong>Contrôles officiels</strong><small>Audits et établissements</small></button>
+<button class="domain" data-domain="pest" onclick="setDomain('pest')"><div class="ico-box"><svg class="ico" aria-hidden="true"><use href="#i-sprout"/></svg></div><strong>Pesticides & résidus</strong><small>LMR et substances actives</small></button>
+<button class="domain" data-domain="add" onclick="setDomain('add')"><div class="ico-box"><svg class="ico" aria-hidden="true"><use href="#i-beaker"/></svg></div><strong>Additifs & auxiliaires</strong><small>Additifs, enzymes, arômes</small></button>
+<button class="domain" data-domain="quality" onclick="setDomain('quality')"><div class="ico-box"><svg class="ico" aria-hidden="true"><use href="#i-award"/></svg></div><strong>Signes de qualité</strong><small>Bio, AOP, IGP, STG</small></button>
+</div></section>
+<section class="section container" id="sources"><div class="section-head"><div><div class="kicker">Catalogue des ressources</div><h2>Les sources à connaître</h2><p>Cinquante ressources officielles d’Europe et de France, réparties en cinq familles d’accès. Chaque fiche indique le statut juridique de la source, son organisme producteur et la date de vérification de son lien.</p></div><button class="linkbtn" onclick="startTour()"><svg class="ico" aria-hidden="true"><use href="#i-play"/></svg> Visite guidée</button></div>
+<div class="content-layout"><aside class="filters"><h3>Affiner le catalogue</h3>
+<div class="filter-group"><label class="title" for="accessFilter">Type d’accès</label><select id="accessFilter" onchange="renderResources()"><option value="all">Tous les accès</option><option value="API">API documentée</option><option value="Base">Base de données</option><option value="Portail">Portail / registre</option><option value="Rapport">Rapport / bulletin</option><option value="Open data">Open data / téléchargement</option></select></div>
+<div class="filter-group"><label class="title" for="geoFilter">Périmètre géographique</label><select id="geoFilter" onchange="renderResources()"><option value="all">Tous les périmètres</option><option value="UE">Union européenne</option><option value="France">France</option><option value="International">International</option></select></div>
+<div class="filter-group"><label class="title">Caractéristiques</label><label class="checkline"><input id="officialFilter" type="checkbox" onchange="renderResources()"> Liens vérifiés uniquement</label><label class="checkline"><input id="apiFilter" type="checkbox" onchange="renderResources()"> API uniquement</label></div>
+<div class="filter-group"><button class="reset" onclick="resetFilters()"><svg class="ico" aria-hidden="true"><use href="#i-rotate-ccw"/></svg> Réinitialiser les filtres</button></div></aside>
+<div><div class="catalog-head"><div><strong id="resultCount" aria-live="polite">Ressources sélectionnées</strong><br><span>50 fiches officielles — URLs vérifiées le 21/11/2026 · Europe et France</span></div><select class="sort" id="sortFilter" onchange="renderResources()"><option value="name">Trier : nom</option><option value="type">Trier : type d’accès</option><option value="geo">Trier : géographie</option><option value="domain">Trier : domaine</option></select></div><div class="resource-list" id="resourceList"></div></div>
+</div></section>
+<section class="section container"><div class="section-head"><div><div class="kicker">Accès à la connaissance</div><h2>Pas seulement des API : cinq familles de ressources</h2><p>La veille réglementaire et scientifique ne se limite pas aux interfaces techniques. Les portails et publications apportent une part essentielle de la connaissance métier.</p></div></div>
+<div class="type-grid">
+<article class="type-card"><div class="ico-box"><svg class="ico" aria-hidden="true"><use href="#i-braces"/></svg></div><h3>API & services web</h3><p>Interrogation automatisée, intégration dans vos applications, alimentation de tableaux de bord et pipelines de données.</p></article>
+<article class="type-card"><div class="ico-box"><svg class="ico" aria-hidden="true"><use href="#i-folders"/></svg></div><h3>Bases & registres</h3><p>Consultation structurée de substances, établissements, allégations, produits, statuts et données de référence.</p></article>
+<article class="type-card"><div class="ico-box"><svg class="ico" aria-hidden="true"><use href="#i-globe"/></svg></div><h3>Portails institutionnels</h3><p>Outils de recherche et de consultation spécialisés, avec filtres, fiches, cartes et documents associés.</p></article>
+<article class="type-card"><div class="ico-box"><svg class="ico" aria-hidden="true"><use href="#i-file-text"/></svg></div><h3>Rapports & bulletins</h3><p>Rapports de surveillance, synthèses de contrôles, bulletins sanitaires, tendances et analyses de risques.</p></article>
+<article class="type-card"><div class="ico-box"><svg class="ico" aria-hidden="true"><use href="#i-download"/></svg></div><h3>Open data & téléchargements</h3><p>Jeux de données, fichiers CSV/JSON/XML, exports et ressources réutilisables selon les licences applicables.</p></article>
+<article class="type-card"><div class="ico-box"><svg class="ico" aria-hidden="true"><use href="#i-library"/></svg></div><h3>Guides & documentation</h3><p>Guides de bonnes pratiques, guides sectoriels, lignes directrices et documents d’interprétation.</p></article>
+</div></section>
+<section class="section container" id="guides"><div class="section-head"><div><div class="kicker">Ressources opérationnelles</div><h2>Les guides professionnels et bonnes pratiques</h2><p>Retrouvez les guides d’hygiène et ressources sectorielles utiles aux opérateurs, responsables qualité, auditeurs et consultants.</p></div><a class="textlink" href="https://agriculture.gouv.fr/guides-de-bonnes-pratiques-dhygiene-gbph" target="_blank" rel="noopener">Répertoire français des GBPH ↗</a></div>
+<div class="guides">
+<article class="guide"><div class="country">France · Ministère de l’Agriculture</div><h3>Guides de bonnes pratiques d’hygiène (GBPH)</h3><p>Répertoire des guides validés en France par secteur d’activité : restauration, métiers de bouche, produits animaux et végétaux, boissons, etc.</p><a href="https://agriculture.gouv.fr/guides-de-bonnes-pratiques-dhygiene-gbph" target="_blank" rel="noopener">Consulter le répertoire ↗</a></article>
+<article class="guide"><div class="country">Union européenne · Commission</div><h3>EU Register of National Guides to GHP</h3><p>Catalogue européen de guides nationaux de bonnes pratiques d’hygiène et d’application des principes HACCP.</p><a href="https://food.ec.europa.eu/food-safety/biological-safety/food-hygiene/guidance-platform_en" target="_blank" rel="noopener">Accéder aux ressources ↗</a></article>
+<article class="guide"><div class="country">Union européenne · Commission</div><h3>Guides sectoriels et documents d’orientation</h3><p>Documents de référence européens et nationaux, à qualifier selon leur statut, leur pays et leur champ d’application.</p><a href="https://food.ec.europa.eu/safety/food-hygiene/guidance-platform_en" target="_blank" rel="noopener">Explorer la plateforme ↗</a></article>
+</div></section>
+<section class="section container" id="veille"><div class="alert-strip"><div><div class="kicker" style="color:#8de0c9">Surveillance & signaux faibles</div><h3>Repérer les évolutions avant qu’elles ne deviennent des urgences.</h3><p>BuSCA, alertes RASFF, rappels nationaux, rapports de fraude et publications scientifiques : les sources de veille sont au cœur du portail.</p></div><a class="btn" href="#sources" onclick="quick('BuSCA')">Explorer les sources de veille →</a></div></section>
+<section class="section container"><div class="section-head"><div><div class="kicker">Organismes de référence</div><h2>Un écosystème institutionnel européen et national</h2><p>Les ressources sont rattachées à leur organisme producteur afin de conserver leur contexte, leur autorité et leur traçabilité.</p></div></div>
+<div class="institution-grid"><div class="institution"><strong>Commission européenne</strong><small>DG SANTE · EUR-Lex</small></div><div class="institution"><strong>EFSA</strong><small>Évaluation des risques</small></div><div class="institution"><strong>ECDC</strong><small>Santé publique</small></div><div class="institution"><strong>ANSES</strong><small>Expertise scientifique</small></div><div class="institution"><strong>DGAL</strong><small>Contrôles officiels</small></div><div class="institution"><strong>DGCCRF</strong><small>Protection économique</small></div><div class="institution"><strong>EEA / AEE</strong><small>Environnement</small></div><div class="institution"><strong>JRC</strong><small>Recherche européenne</small></div><div class="institution"><strong>Data.gouv.fr</strong><small>Données publiques</small></div><div class="institution"><strong>OMS / FAO</strong><small>Références internationales</small></div></div>
+</section>
+<section class="section container" id="method"><div class="section-head"><div><div class="kicker">Fiabilité & transparence</div><h2>Une méthode éditoriale exigeante</h2><p>Une ressource n’est utile que si son origine, son statut et ses conditions d’utilisation sont compréhensibles.</p></div></div>
+<div class="method"><article><b>1. Source primaire privilégiée</b><p>Priorité aux institutions productrices, textes officiels, bases publiques et organismes scientifiques reconnus.</p></article><article><b>2. Type d’accès explicite</b><p>API documentée, portail, registre, rapport ou téléchargement : aucune API n’est présumée sans documentation officielle.</p></article><article><b>3. Métadonnées vérifiables</b><p>Producteur, périmètre, langue, formats, licence, authentification, fréquence et date de dernière vérification.</p></article><article><b>4. Statut juridique distingué</b><p>Texte contraignant, guide validé, recommandation, avis scientifique ou outil informatif : chaque statut est qualifié.</p></article><article><b>5. Couverture multi-pays</b><p>Les sources européennes sont complétées par les ressources nationales pertinentes des 27 États membres.</p></article><article><b>6. Traçabilité des mises à jour</b><p>Chaque fiche doit conserver un historique des contrôles, changements d’URL et évolutions de disponibilité.</p></article></div>
+</section>
+</main>
+<footer><div class="container"><div class="footergrid"><div class="footerbrand"><a class="brand" href="#accueil"><div class="brandmark">FS</div><div class="brandname" style="color:#fff">Food Safety <span>Intelligence</span><small style="color:#91a1b5">Official knowledge & data</small></div></a><p>Un portail de découverte et de qualification des connaissances officielles en sécurité des aliments, au service des professionnels de la chaîne alimentaire.</p></div><div class="footercol"><strong>Explorer</strong><a href="#explorer">Domaines</a><a href="#sources">Catalogue des sources</a><a href="#guides">Guides professionnels</a></div><div class="footercol"><strong>Connaissance</strong><a href="#veille">Veille sanitaire</a><a href="#method">Méthodologie</a><a href="https://food.ec.europa.eu/" target="_blank" rel="noopener">Commission européenne ↗</a></div><div class="footercol"><strong>À propos</strong><a href="#method">Périmètre éditorial</a><a href="https://www.efsa.europa.eu/" target="_blank" rel="noopener">EFSA ↗</a><a href="https://www.anses.fr/" target="_blank" rel="noopener">ANSES ↗</a></div></div><div class="footnote"><span>© 2026 Food Safety Intelligence — portail de découverte des sources officielles.</span><span>* 50 ressources officielles d’Europe et de France. URLs vérifiées le 21/11/2026 : 46 répondent normalement, 3 sont protégées par un contrôle anti-robot (à ouvrir en navigateur) et 1 était en maintenance le jour du contrôle. Vérifiez toujours la version du texte avant toute décision. Ce portail n’est pas un site officiel de l’Union européenne.</span></div></div></footer>
+<div class="modal-backdrop" id="modal" onclick="if(event.target===this)closeModal()"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal-head"><div><div class="kicker" id="modalKicker">FICHE RESSOURCE</div><h2 id="modalTitle">Titre</h2></div><button class="close" aria-label="Fermer la fenêtre" onclick="closeModal()"><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg></button></div><div class="modal-body" id="modalBody"></div></div></div>
+<div class="favbar" id="favBar"><span id="favCount">0 source en favoris</span><button onclick="openFavs()"><svg class="ico" aria-hidden="true"><use href="#i-star"/></svg> Ma sélection</button><button onclick="copyFavs()">Copier la liste</button><button onclick="clearFavs()">Vider</button></div>
+<div class="tour-layer" id="tourLayer"><div class="tour-spot" id="tourSpot"></div><div class="tour-bubble" id="tourBubble"></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const resources=[
+{id:'eurlex',name:'EUR-Lex / CELLAR',org:'Office des publications de l’Union européenne',domain:'reg',geo:'UE',type:'API',icon:'scale',desc:'Accès aux textes juridiques de l’Union européenne, métadonnées et documents via les services de données CELLAR, dont SPARQL.',formats:'HTML, PDF, XML, RDF',link:'https://eur-lex.europa.eu/',access:'API et portail',statut:'conforme',checked:'ok',note:'La disponibilité des services et les modalités d’interrogation sont à confirmer dans la documentation CELLAR.'},
+{id:'legifrance',name:'Légifrance',org:'République française — service public du droit',domain:'reg',geo:'France',type:'Portail',icon:'scroll-text',desc:'Textes consolidés français en vigueur : lois, décrets, arrêtés, circulaires et jurisprudence, avec l’historique des versions.',formats:'HTML, PDF',link:'https://www.legifrance.gouv.fr/',access:'Portail public',statut:'conforme',checked:'ok',note:'La version consolidée fait foi pour l’application française ; vérifier la date de consolidation avant citation.'},
+{id:'foodlaw',name:'General Food Law — cadre juridique',org:'Commission européenne — DG SANTE',domain:'reg',geo:'UE',type:'Portail',icon:'landmark',desc:'Présentation du règlement (CE) n° 178/2002 : principes généraux, chaîne alimentaire, principe de précaution, alerte et responsabilité des opérateurs.',formats:'Pages web, textes',link:'https://food.ec.europa.eu/horizontal-topics/general-food-law_en',access:'Portail documentaire',statut:'conforme',checked:'ok',note:'Page de synthèse : le texte consolidé applicable reste celui d’EUR-Lex.'},
+{id:'eudatabases',name:'Bases de données et services en ligne de l’UE',org:'Commission européenne — DG SANTE',domain:'reg',geo:'UE',type:'Portail',icon:'folders',desc:'Répertoire des bases de données et services en ligne de l’UE en sécurité des aliments : registres, outils de consultation et portails spécialisés.',formats:'Pages web',link:'https://food.ec.europa.eu/horizontal-topics/eu-food-safety-databases-and-other-online-services_en',access:'Portail de ressources',statut:'outil',checked:'ok',note:'Point de départ recommandé pour repérer la bonne base avant de chercher un texte ou un registre.'},
+{id:'fip',name:'Food and Feed Information Portal (FIP)',org:'Commission européenne',domain:'reg',geo:'UE',type:'Base',icon:'search',desc:'Portail de recherche multi-bases de la chaîne alimentaire : additifs, allégations, OGM, produits et établissements.',formats:'Consultation web',link:'https://ec.europa.eu/food/food-feed-portal',access:'Recherche multi-sources',statut:'registre',checked:'ok',note:'Chaque champ interrogé renvoie vers la base d’origine : vérifier la source affichée avant exploitation.'},
+{id:'jrc',name:'Centre commun de recherche (JRC)',org:'Commission européenne — JRC',domain:'reg',geo:'UE',type:'Rapport',icon:'microscope',desc:'Recherche et rapports scientifiques de la Commission, notamment sur les méthodes d’analyse, la métrologie et les équivalences de laboratoires.',formats:'Rapports PDF, pages web',link:'https://joint-research-centre.ec.europa.eu/scientific-activities_en',access:'Publications et outils',statut:'science',checked:'ok',note:'Ressource de support technique : elle ne remplace pas les textes réglementaires ni les avis de l’EFSA.'},
+{id:'traces',name:'TRACES — échanges intracommunautaires',org:'Commission européenne',domain:'control',geo:'UE',type:'Portail',icon:'truck',desc:'Système de contrôle et d’expertise des échanges : animaux vivants, produits d’origine animale et sous-produits animaux.',formats:'Consultation web, certificats',link:'https://food.ec.europa.eu/horizontal-topics/traces_en',access:'Système d’échange',statut:'outil',checked:'ok',note:'Fonction opérationnelle pour les échanges soumis à certificat ; l’accès complet nécessite un compte professionnel.'},
+{id:'flis',name:'Food Labelling Information System (FLIS)',org:'Commission européenne',domain:'label',geo:'UE',type:'Portail',icon:'tag',desc:'Outil d’information sur les dispositions européennes d’étiquetage applicables selon les catégories de denrées alimentaires.',formats:'Consultation web',link:'https://food.ec.europa.eu/food-safety/labelling-and-nutrition/food-labelling-information-system-flis_en',access:'Portail d’information',statut:'outil',checked:'ok',note:'Outil informatif : les textes réglementaires applicables restent les références juridiques.'},
+{id:'fic',name:'Information du consommateur — législation',org:'Commission européenne',domain:'label',geo:'UE',type:'Portail',icon:'clipboard-list',desc:'Règlement (UE) n° 1169/2011 : information du consommateur, allergènes, datation, origine et mentions obligatoires — texte et interprétations.',formats:'Textes, pages web',link:'https://food.ec.europa.eu/food-safety/labelling-and-nutrition/food-information-consumers-legislation_en',access:'Portail documentaire',statut:'conforme',checked:'ok',note:'À rapprocher du texte consolidé sur EUR-Lex pour toute vérification juridique.'},
+{id:'dgccrf-fiches',name:'DGCCRF — fiches pratiques et FAQ',org:'DGCCRF — Ministère de l’Économie',domain:'label',geo:'France',type:'Rapport',icon:'pen-line',desc:'Fiches pratiques et foires aux questions de la DGCCRF : étiquetage, mentions obligatoires, pratiques commerciales et contrôles.',formats:'Pages web, PDF',link:'https://www.economie.gouv.fr/dgccrf/les-fiches-pratiques',access:'Documentation publique',statut:'outil',checked:'ok',note:'Lecture opérationnelle très utile en préparation d’audit ou de réponse à un contrôle.'},
+{id:'gbph-fr',name:'Guides de bonnes pratiques d’hygiène (GBPH)',org:'Ministère français chargé de l’agriculture',domain:'guide',geo:'France',type:'Portail',icon:'library',desc:'Répertoire français des guides de bonnes pratiques d’hygiène par secteur d’activité : restauration, métiers de bouche, produits animaux et végétaux, boissons.',formats:'Pages web, PDF',link:'https://agriculture.gouv.fr/guides-de-bonnes-pratiques-dhygiene-gbph',access:'Répertoire documentaire',statut:'guide',checked:'ok',note:'Vérifier la version du guide et son statut de validation avant de s’y référer.'},
+{id:'gbph-eu',name:'EU Register of National Guides to GHP',org:'Commission européenne',domain:'guide',geo:'UE',type:'Portail',icon:'book',desc:'Répertoire européen des guides nationaux de bonnes pratiques d’hygiène et d’application des principes HACCP.',formats:'Fiches et documents',link:'https://webgate.ec.europa.eu/dyna2/hygienelegislation/',access:'Catalogue web',statut:'guide',checked:'ok',note:'Le statut de chaque guide est national : la présence au catalogue ne vaut pas validation uniforme.'},
+{id:'guidance-platform',name:'Guides et documents d’orientation de la Commission',org:'Commission européenne',domain:'guide',geo:'UE',type:'Rapport',icon:'book-open',desc:'Documents de la Commission et guides de parties prenantes sur l’hygiène (règlements 852/2004 et 853/2004), la Listeria, les œufs, l’eau embouteillée.',formats:'PDF, pages web',link:'https://food.ec.europa.eu/food-safety/biological-safety/food-hygiene/guidance-platform_en',access:'Documentation officielle',statut:'guide',checked:'ok',note:'Distinction à faire entre guides de la Commission (poids d’interprétation) et guides de parties prenantes.'},
+{id:'efsa-data',name:'EFSA — données et publications',org:'Autorité européenne de sécurité des aliments (EFSA)',domain:'micro',geo:'UE',type:'Open data',icon:'flask-conical',desc:'Données, jeux de données et bases de l’EFSA : consommation alimentaire, OpenFoodTox, monitoring chimique, maladies zoonotiques.',formats:'Données et publications selon jeu',link:'https://www.efsa.europa.eu/en/topics/topic/data',access:'Portail et téléchargements',statut:'science',checked:'ok',note:'Les formats, conditions de réutilisation et fréquences varient selon les jeux de données.'},
+{id:'micriteria',name:'Critères microbiologiques (UE)',org:'Commission européenne',domain:'micro',geo:'UE',type:'Portail',icon:'biohazard',desc:'Critères microbiologiques applicables aux denrées alimentaires et à leurs procédés : règlement (CE) n° 2073/2005, listes et interprétation.',formats:'Textes, pages web',link:'https://food.ec.europa.eu/food-safety/biological-safety/food-hygiene/microbiological-criteria_en',access:'Portail documentaire',statut:'conforme',checked:'ok',note:'Le texte consolidé d’EUR-Lex reste la référence pour tout plan d’échantillonnage ou décision de conformité.'},
+{id:'efsa-zoo',name:'EFSA — maladies zoonotiques d’origine alimentaire',org:'EFSA',domain:'micro',geo:'UE',type:'Rapport',icon:'dna',desc:'Surveillance et avis scientifiques sur Salmonella, Listeria, Campylobacter, STEC et autres agents transmis par les aliments.',formats:'Avis, rapports, données',link:'https://www.efsa.europa.eu/en/topics/topic/food-borne-zoonotic-diseases',access:'Publications scientifiques',statut:'science',checked:'ok',note:'À croiser avec les rapports zoonoses annuels EFSA/ECDC pour la lecture des tendances.'},
+{id:'ecdc-atlas',name:'ECDC — Atlas de surveillance',org:'Centre européen de prévention et de contrôle des maladies',domain:'micro',geo:'UE',type:'Portail',icon:'map',desc:'Cartographie interactive des données de surveillance des maladies infectieuses en Europe, dont les infections d’origine alimentaire.',formats:'Cartes et données web',link:'https://atlas.ecdc.europa.eu/',access:'Outil de consultation',statut:'data',checked:'ok',note:'L’atlas illustre des tendances : ne pas l’utiliser comme source de décision réglementaire.'},
+{id:'ecdc-data',name:'ECDC — surveillance et données',org:'Centre européen de prévention et de contrôle des maladies',domain:'micro',geo:'UE',type:'Open data',icon:'dna',desc:'Rapports et jeux de données de surveillance des maladies infectieuses ; à croiser avec les rapports zoonoses EFSA/ECDC.',formats:'Rapports, jeux de données',link:'https://www.ecdc.europa.eu/en/ecdc-activities-surveillance',access:'Portail et téléchargements',statut:'data',checked:'protect',note:'Accès depuis un réseau professionnel possible ; le site applique un contrôle anti-robot sur certains réseaux.'},
+{id:'eurl',name:'Laboratoires de référence de l’UE (EURL)',org:'Commission européenne — DG SANTE',domain:'micro',geo:'UE',type:'Portail',icon:'microscope',desc:'Liste des laboratoires de référence de l’UE et de leurs missions : méthodes d’analyse, substances contaminants, résidus.',formats:'Pages web, documents',link:'https://food.ec.europa.eu/horizontal-topics/european-union-reference-laboratories_en',access:'Répertoire institutionnel',statut:'science',checked:'ok',note:'Utile pour comprendre la chaîne analytique derrière un résultat de laboratoire de contrôle.'},
+{id:'hubeau',name:'Hub’Eau — qualité des eaux',org:'Office français de la biodiversité',domain:'water',geo:'France',type:'API',icon:'droplet',desc:'Services API d’accès à des données publiques sur l’eau et les milieux aquatiques, dont la qualité des eaux selon les jeux disponibles.',formats:'JSON, CSV selon service',link:'https://hubeau.eaufrance.fr/',access:'API documentées',statut:'data',checked:'ok',note:'Pour l’eau destinée à la consommation humaine, compléter avec les portails du ministère de la Santé.'},
+{id:'eau-robinet',name:'Qualité de l’eau du robinet',org:'Ministère chargé de la Santé',domain:'water',geo:'France',type:'Portail',icon:'droplets',desc:'Information publique sur la qualité sanitaire de l’eau potable distribuée au robinet et les résultats du contrôle sanitaire.',formats:'Consultation web',link:'https://www.sante.gouv.fr/sante-et-environnement/eaux/eau',access:'Portail institutionnel',statut:'data',checked:'protect',note:'Les résultats sont à interpréter à l’échelle de l’unité de distribution et de la période considérée.'},
+{id:'rasff',name:'RASFF Window',org:'Commission européenne — DG SANTE',domain:'alerts',geo:'UE',type:'Portail',icon:'siren',desc:'Consultation publique des notifications du système européen d’alerte rapide pour les denrées alimentaires et les aliments pour animaux.',formats:'Consultation web',link:'https://webgate.ec.europa.eu/rasff-window/screen/search',access:'Portail de consultation',statut:'data',checked:'ok',note:'La fenêtre publique ne donne pas accès à l’intégralité des échanges opérationnels du réseau.'},
+{id:'acn',name:'Alert and Cooperation Network (ACN)',org:'Commission européenne',domain:'alerts',geo:'UE',type:'Portail',icon:'globe',desc:'Réseau européen d’alerte et de coopération : notifications RASFF, assistance administrative (AAC) et réseau fraude (FFN).',formats:'Pages web, rapports',link:'https://food.ec.europa.eu/food-safety/acn_en',access:'Portail institutionnel',statut:'outil',checked:'ok',note:'Les rapports mensuels ne couvrent pas les non-conformités limitées à un seul État membre.'},
+{id:'rappelconso',name:'RappelConso',org:'DGCCRF / Ministère de l’Économie',domain:'alerts',geo:'France',type:'Open data',icon:'megaphone',desc:'Données publiques sur les rappels de produits de consommation commercialisés en France, dont les denrées alimentaires.',formats:'CSV, données ouvertes selon publication',link:'https://rappel.conso.gouv.fr/',access:'Portail et open data',statut:'data',checked:'ok',note:'Contrôler le schéma et la date de mise à jour du jeu de données associé.'},
+{id:'busca',name:'BuSCA — Bulletin de surveillance sanitaire',org:'Plateforme de surveillance de la chaîne alimentaire / ANSES',domain:'alerts',geo:'France',type:'Rapport',icon:'newspaper',desc:'Bulletin de veille sanitaire sur la chaîne alimentaire : signaux, événements et informations d’intérêt en France et à l’international.',formats:'Bulletins et publications',link:'https://www.plateforme-sca.fr/',access:'Publication périodique',statut:'data',checked:'ok',note:'Publication documentaire, pas une API ouverte documentée.'},
+{id:'contaminants',name:'Contaminants dans les denrées (UE)',org:'Commission européenne',domain:'chem',geo:'UE',type:'Portail',icon:'test-tube',desc:'Textes et pages de la Commission sur les contaminants : métaux, mycotoxines, 3-MCPD, résidus de traitement et substances indésirables.',formats:'Textes, pages web',link:'https://food.ec.europa.eu/food-safety/chemical-safety/contaminants_en',access:'Portail documentaire',statut:'conforme',checked:'ok',note:'Les limites applicables figurent dans les règlements consolidés : vérifier la version en vigueur.'},
+{id:'echa',name:'ECHA — substances (REACH / CLP)',org:'Agence européenne des produits chimiques',domain:'chem',geo:'UE',type:'Base',icon:'beaker',desc:'Base des substances soumises à enregistrement REACH : propriétés, dangers, restrictions — utile pour les substances en contact avec les aliments.',formats:'Consultation web, téléchargements',link:'https://echa.europa.eu/substances-subject-to-registration',access:'Base consultable',statut:'registre',checked:'protect',note:'Le site applique un contrôle anti-robot : ouvrir depuis un navigateur standard. REACH ne remplace pas la réglementation alimentaire proprement dite.'},
+{id:'efsa-tools',name:'EFSA — outils et ressources d’évaluation',org:'EFSA',domain:'chem',geo:'UE',type:'API',icon:'wrench',desc:'Knowledge Junction (dépôt de données ouvert), OpenFoodTox (base de dangers chimiques) et portail API de l’EFSA.',formats:'Données, API, documents',link:'https://www.efsa.europa.eu/en/science/tools-and-resources',access:'Dépôt ouvert et API',statut:'science',checked:'ok',note:'Le portail API est en version bêta : vérifier la documentation en vigueur avant intégration.'},
+{id:'fcm',name:'Food Contact Materials',org:'Commission européenne',domain:'fcm',geo:'UE',type:'Portail',icon:'package',desc:'Portail de la Commission consacré aux matériaux et objets destinés à entrer en contact avec les denrées alimentaires.',formats:'Pages, textes et documents',link:'https://food.ec.europa.eu/food-safety/chemical-safety/food-contact-materials_en',access:'Portail documentaire',statut:'conforme',checked:'ok',note:'Le cadre général est notamment défini par le règlement (CE) n° 1935/2004 ; les mesures spécifiques dépendent du matériau.'},
+{id:'efsa-fcm',name:'EFSA — avis sur les matériaux au contact',org:'EFSA',domain:'fcm',geo:'UE',type:'Rapport',icon:'flask-conical',desc:'Avis scientifiques de l’EFSA sur les substances migrant des matériaux au contact : plastiques, encres, recouvrements, substances de base.',formats:'Avis scientifiques PDF',link:'https://www.efsa.europa.eu/en/topics/topic/food-contact-materials',access:'Publications scientifiques',statut:'science',checked:'ok',note:'Un avis de l’EFSA fonde la réglementation mais ne la constitue pas : vérifier le texte adopté.'},
+{id:'ffn',name:'EU Agri-Food Fraud Network',org:'Commission européenne — réseau FFN',domain:'fraud',geo:'UE',type:'Portail',icon:'search',desc:'Réseau européen de lutte contre la fraude alimentaire : définitions, actions coordonnées, rapports et publications.',formats:'Pages web, PDF',link:'https://food.ec.europa.eu/food-safety/eu-agri-food-fraud-network_en',access:'Portail documentaire',statut:'outil',checked:'ok',note:'Une suspicion rapportée ne constitue pas, à elle seule, une fraude juridiquement établie.'},
+{id:'fraud-monthly',name:'EU Agri-Food Fraud Suspicions — rapports mensuels',org:'Commission européenne — réseau ACN',domain:'fraud',geo:'UE',type:'Rapport',icon:'chart-column',desc:'Rapports mensuels publics sur les suspicions de non-conformités avec possible intention frauduleuse, issus des réseaux européens.',formats:'PDF',link:'https://food.ec.europa.eu/food-safety/acn/ffn-monthly_en',access:'Rapports mensuels',statut:'data',checked:'ok',note:'Les cas touchant un seul État membre ne figurent pas dans ces rapports.'},
+{id:'adis',name:'Animal Disease Information System (ADIS)',org:'Commission européenne',domain:'animal',geo:'UE',type:'Portail',icon:'paw-print',desc:'Système européen d’information sur les maladies animales et les notifications associées.',formats:'Consultation web',link:'https://food.ec.europa.eu/animals/animal-diseases/animal-disease-information-system-adis_en',access:'Système d’information',statut:'data',checked:'ok',note:'Les données accessibles au public ne correspondent pas à toutes les fonctions du système.'},
+{id:'animal-health',name:'Santé animale (UE)',org:'Commission européenne',domain:'animal',geo:'UE',type:'Portail',icon:'stethoscope',desc:'Réglementation et actions de l’UE sur la santé animale : maladies, prévention, statut sanitaire des États membres.',formats:'Textes, pages web',link:'https://food.ec.europa.eu/animals/animal-health_en',access:'Portail documentaire',statut:'conforme',checked:'ok',note:'À articuler avec les exigences de la chaîne alimentaire pour les produits d’origine animale.'},
+{id:'feed-add',name:'Additifs pour l’alimentation animale (UE)',org:'Commission européenne',domain:'animal',geo:'UE',type:'Portail',icon:'wheat',desc:'Autorisations et conditions d’utilisation des additifs pour l’alimentation animale : vitamines, acides aminés, zootechniques.',formats:'Textes, registres',link:'https://food.ec.europa.eu/food-safety/animal-feed/feed-additives_en',access:'Portail documentaire',statut:'conforme',checked:'ok',note:'Vérifier l’autorisation spécifique (additif, catégorie d’animaux, conditions d’emploi).'},
+{id:'abp',name:'Établissements agréés — sous-produits animaux',org:'Commission européenne',domain:'animal',geo:'UE',type:'Base',icon:'factory',desc:'Liste des établissements de l’UE approuvés pour les sous-produits animaux, par pays et catégorie d’activité.',formats:'Consultation web',link:'https://food.ec.europa.eu/food-safety/animal-products/approved-establishments-abp_en',access:'Registre consultable',statut:'registre',checked:'ok',note:'Statut à revérifier régulièrement : les agréments évoluent.'},
+{id:'healthclaims',name:'EU Register of Health Claims',org:'Commission européenne',domain:'nutrition',geo:'UE',type:'Base',icon:'salad',desc:'Registre des allégations nutritionnelles et de santé autorisées ou non autorisées dans l’Union européenne.',formats:'Consultation web',link:'https://ec.europa.eu/food/food-feed-portal/screen/health-claims/eu-register',access:'Registre consultable',statut:'registre',checked:'ok',note:'À rapprocher du règlement (CE) n° 1924/2006 et des conditions d’utilisation de chaque allégation.'},
+{id:'ciqual',name:'CIQUAL — table de composition des aliments',org:'ANSES',domain:'nutrition',geo:'France',type:'Base',icon:'utensils',desc:'Table de composition des aliments de l’ANSES : valeurs nutritionnelles et éléments pour 100 g, référence des étiquetages nutritionnels.',formats:'Consultation web, téléchargements',link:'https://ciqual.anses.fr/',access:'Base consultable',statut:'data',checked:'down',note:'Site en maintenance au moment du contrôle du 21/11/2026 : réessayer ultérieurement.'},
+{id:'audit',name:'Rapports d’audits de la Commission',org:'Commission européenne — DG SANTE',domain:'control',geo:'UE',type:'Rapport',icon:'shield-check',desc:'Rapports d’audits et d’analyses de la Commission sur les systèmes de contrôle officiels des pays et secteurs.',formats:'PDF / pages web',link:'https://food.ec.europa.eu/horizontal-topics/official-controls-and-enforcement/health-and-food-audits-and-analysis_en',access:'Rapports publics',statut:'data',checked:'ok',note:'Les rapports portent sur des missions et périmètres précis ; lire les conclusions et plans d’action dans leur contexte.'},
+{id:'alimconfiance',name:'Alim’confiance',org:'Ministère français chargé de l’Agriculture',domain:'control',geo:'France',type:'Open data',icon:'store',desc:'Résultats publics des contrôles officiels en matière de sécurité sanitaire des aliments dans les établissements concernés.',formats:'Données ouvertes / carte',link:'https://alim-confiance.gouv.fr/',access:'Portail et données',statut:'data',checked:'ok',note:'Les résultats reflètent un contrôle à une date donnée et ne constituent pas une garantie permanente.'},
+{id:'oc',name:'Contrôles officiels et mise en œuvre du droit (UE)',org:'Commission européenne',domain:'control',geo:'UE',type:'Portail',icon:'scale',desc:'Règlement (UE) 2017/625, systèmes de contrôle officiel, audits de la Commission et dispositions relatives aux sanctions.',formats:'Textes, pages web',link:'https://food.ec.europa.eu/horizontal-topics/official-controls-and-enforcement_en',access:'Portail documentaire',statut:'conforme',checked:'ok',note:'Cadre applicable aux contrôles : à lire avec les textes sectoriels spécifiques.'},
+{id:'approved',name:'Établissements alimentaires agréés (UE)',org:'Commission européenne',domain:'control',geo:'UE',type:'Base',icon:'factory',desc:'Répertoire des établissements de l’UE approuvés pour les produits d’origine animale, par pays et catégorie.',formats:'Consultation web',link:'https://food.ec.europa.eu/food-safety/biological-safety/food-hygiene/approved-eu-food-establishments_en',access:'Registre consultable',statut:'registre',checked:'ok',note:'Statut à revérifier : les agréments et catégories évoluent.'},
+{id:'pesticides',name:'EU Pesticides Database',org:'Commission européenne',domain:'pest',geo:'UE',type:'Base',icon:'sprout',desc:'Base de référence sur les substances actives, limites maximales de résidus et informations réglementaires associées aux pesticides.',formats:'Consultation web',link:'https://food.ec.europa.eu/plants/pesticides/eu-pesticides-database_en',access:'Base consultable',statut:'registre',checked:'ok',note:'Vérifier les textes consolidés et les dates d’application pour toute décision de conformité.'},
+{id:'pesticides-hub',name:'Pesticides — hub de la Commission',org:'Commission européenne',domain:'pest',geo:'UE',type:'Portail',icon:'wheat',desc:'Réglementation, substances actives, LMR, autorisations et documents sur les produits phytopharmaceutiques.',formats:'Textes, pages web',link:'https://food.ec.europa.eu/plants/pesticides_en',access:'Portail documentaire',statut:'conforme',checked:'ok',note:'À articuler avec la base pesticides pour vérifier le statut d’une substance.'},
+{id:'additives',name:'Food Additives Database',org:'Commission européenne',domain:'add',geo:'UE',type:'Base',icon:'beaker',desc:'Base d’information sur les additifs alimentaires autorisés et leurs conditions d’utilisation dans les catégories de denrées.',formats:'Consultation web',link:'https://food.ec.europa.eu/food-safety/food-improvement-agents/additives_en',access:'Base consultable',statut:'registre',checked:'ok',note:'La liste de l’Union et le règlement (CE) n° 1333/2008 constituent les références réglementaires.'},
+{id:'enzymes',name:'Enzymes alimentaires (UE)',org:'Commission européenne',domain:'add',geo:'UE',type:'Portail',icon:'dna',desc:'Règles et autorisations concernant les enzymes utilisées comme additifs alimentaires dans l’Union européenne.',formats:'Textes, pages web',link:'https://food.ec.europa.eu/food-safety/food-improvement-agents/enzymes_en',access:'Portail documentaire',statut:'conforme',checked:'ok',note:'Vérifier l’autorisation de l’enzyme et la catégorie de denrée visée.'},
+{id:'flavourings',name:'Arômes alimentaires (UE)',org:'Commission européenne',domain:'add',geo:'UE',type:'Portail',icon:'flower',desc:'Réglementation et autorisations des arômes alimentaires, dont les arômes fumés et les préparations.',formats:'Textes, pages web',link:'https://food.ec.europa.eu/food-safety/food-improvement-agents/flavourings_en',access:'Portail documentaire',statut:'conforme',checked:'ok',note:'Consulter les listes de substances pour vérifier l’usage autorisé.'},
+{id:'eambrosia',name:'eAmbrosia — registre des indications géographiques',org:'Commission européenne',domain:'quality',geo:'UE',type:'API',icon:'award',desc:'Registre européen des indications géographiques des produits agricoles, denrées alimentaires, vins et spiritueux ; une API est documentée.',formats:'Données structurées via API et portail',link:'https://ec.europa.eu/agriculture/eambrosia/geographical-indications-register/',access:'Portail et API documentée',statut:'registre',checked:'ok',note:'Consulter la documentation API en vigueur avant intégration ; vérifier les conditions de réutilisation.'},
+{id:'inao',name:'INAO — signes de qualité français',org:'Institut national de l’origine et de la qualité',domain:'quality',geo:'France',type:'Portail',icon:'medal',desc:'AOP, IGP, STG, vins et produits spécifiques : dossiers, cahiers des charges et procédures de reconnaissance.',formats:'Pages web, documents',link:'https://www.inao.gouv.fr/',access:'Portail institutionnel',statut:'registre',checked:'ok',note:'Le cahier des charges publié fait foi pour l’usage du signe sur un produit.'},
+{id:'organic',name:'Agriculture biologique (UE)',org:'Commission européenne — DG AGRI',domain:'quality',geo:'UE',type:'Portail',icon:'leaf',desc:'Règlement (UE) 2018/848 sur l’agriculture biologique : règles de conversion, contrôles, certification et équivalences.',formats:'Textes, pages web',link:'https://agriculture.ec.europa.eu/farming/organic-farming_en',access:'Portail documentaire',statut:'conforme',checked:'ok',note:'Le statut bio d’un opérateur est à vérifier auprès de l’organisme de contrôle compétent.'}
+];
+let currentDomain='all', currentQuery='';
+const domainNames={all:'Tous les domaines',reg:'Réglementation',label:'Étiquetage & information',guide:'Guides & bonnes pratiques',micro:'Microbiologie',water:'Eau & environnement',alerts:'Alertes & rappels',chem:'Risques chimiques',fcm:'Matériaux au contact',fraud:'Fraude alimentaire',animal:'Santé animale & aliments',nutrition:'Nutrition & composition',control:'Contrôles officiels',pest:'Pesticides & résidus',add:'Additifs & auxiliaires',quality:'Signes de qualité'};
+const VERIFIED='21/11/2026';
+const statutNames={conforme:'Texte contraignant',guide:'Guide / recommandation',science:'Avis scientifique',outil:'Outil informatif',data:'Donnée publique',registre:'Registre officiel'};
+const checkNames={ok:'Vérifié le '+VERIFIED,protect:'Accès protégé (anti-robot) — ouvrir en navigateur',down:'En maintenance le '+VERIFIED};
+const checkIcons={ok:'check',protect:'flag',down:'clock'};
+/* Rendu d'une icône SVG du sprite (jamais d'emoji) */
+function ico(name,cls){return '<svg class="ico'+(cls?' '+cls:'')+'" aria-hidden="true"><use href="#i-'+name+'"/></svg>'}
+function copyAny(text,msg){
+ const done=()=>toast(msg||'Copié');
+ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done).catch(()=>fallback())}else{fallback()}
+ function fallback(){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done()}catch(e){toast('Copie impossible — sélectionnez le texte')}document.body.removeChild(ta)}
+}
+function cardHTML(r){
+ return `<article class="resource"><div class="resource-logo">${ico(r.icon)}</div><div><h3>${r.name}</h3><p>${r.desc}</p><div class="meta"><span class="pill ${r.type==='API'?'api':r.type==='Rapport'?'report':'portal'}">${r.type}</span><span class="pill ${r.statut}">${statutNames[r.statut]}</span><span class="pill">${r.geo}</span><span class="pill">${r.org}</span></div><div class="vline"><span class="vbadge ${r.checked}">${ico(checkIcons[r.checked])}${checkNames[r.checked]}</span></div></div><div class="resource-actions"><button class="star${favOn(r.id)?' on':''}" onclick="toggleFav('${r.id}')" title="Ajouter à ma sélection" aria-label="Ajouter aux favoris" aria-pressed="${favOn(r.id)}">${ico('star')}</button><button class="btn" onclick="openDetail('${r.id}')">Voir la fiche ${ico('arrow-up-right')}</button><button class="btn" onclick="window.open('${r.link}','_blank','noopener')">Site officiel</button></div></article>`;
+}
+function renderResources(){
+ const access=document.getElementById('accessFilter').value,geo=document.getElementById('geoFilter').value,verifiedOnly=document.getElementById('officialFilter').checked,api=document.getElementById('apiFilter').checked,sort=document.getElementById('sortFilter').value;
+ let arr=resources.filter(r=>(currentDomain==='all'||r.domain===currentDomain)&&(!currentQuery||[r.name,r.org,r.desc,domainNames[r.domain],r.geo,r.type].join(' ').toLowerCase().includes(currentQuery.toLowerCase()))&&(access==='all'||r.type===access)&&(geo==='all'||r.geo===geo)&&(!api||r.type==='API')&&(!verifiedOnly||r.checked==='ok'));
+ arr.sort((a,b)=>sort==='type'?a.type.localeCompare(b.type):sort==='geo'?a.geo.localeCompare(b.geo):sort==='domain'?(domainNames[a.domain]+'|'+a.name).localeCompare(domainNames[b.domain]+'|'+b.name):a.name.localeCompare(b.name));
+ document.getElementById('resultCount').textContent=arr.length+' ressource'+(arr.length>1?'s':'')+' affichée'+(arr.length>1?'s':'');
+ const list=document.getElementById('resourceList');
+ if(!arr.length){list.innerHTML='<div class="empty"><svg class="ico" aria-hidden="true"><use href="#i-search"/></svg>Aucune ressource ne correspond à ces critères.<br><small>Essayez d’élargir les filtres ou la recherche — par exemple « allergènes », « RASFF » ou « étiquetage ».</small></div>';return}
+ list.innerHTML=arr.map(cardHTML).join('');
+}
+function setDomain(d){currentDomain=d;document.querySelectorAll('.domain').forEach(x=>x.classList.toggle('active',x.dataset.domain===d));document.getElementById('sources').scrollIntoView({behavior:'smooth'});renderResources()}
+function runSearch(){currentQuery=document.getElementById('globalSearch').value.trim();currentDomain='all';document.querySelectorAll('.domain').forEach(x=>x.classList.toggle('active',x.dataset.domain==='all'));document.getElementById('sources').scrollIntoView({behavior:'smooth'});renderResources()}
+function quick(q){document.getElementById('globalSearch').value=q;currentQuery=q;currentDomain='all';document.querySelectorAll('.domain').forEach(x=>x.classList.toggle('active',x.dataset.domain==='all'));renderResources();document.getElementById('sources').scrollIntoView({behavior:'smooth'})}
+function resetFilters(){document.getElementById('accessFilter').value='all';document.getElementById('geoFilter').value='all';document.getElementById('officialFilter').checked=false;document.getElementById('apiFilter').checked=false;document.getElementById('globalSearch').value='';currentQuery='';currentDomain='all';document.querySelectorAll('.domain').forEach(x=>x.classList.toggle('active',x.dataset.domain==='all'));renderResources()}
+function openDetail(id){const r=resources.find(x=>x.id===id);if(!r)return;document.getElementById('modalKicker').textContent=domainNames[r.domain]+' · '+r.geo;document.getElementById('modalTitle').textContent=r.name;document.getElementById('modalBody').innerHTML=`<p>${r.desc}</p><div class="detail-grid"><div class="detail-field"><small>Organisme producteur</small><strong>${r.org}</strong></div><div class="detail-field"><small>Statut juridique</small><strong>${statutNames[r.statut]}</strong></div><div class="detail-field"><small>Type d’accès</small><strong>${r.access}</strong></div><div class="detail-field"><small>Formats / supports</small><strong>${r.formats}</strong></div><div class="detail-field"><small>Périmètre</small><strong>${r.geo}</strong></div><div class="detail-field"><small>État du lien</small><strong class="vbadge ${r.checked}">${ico(checkIcons[r.checked])}${checkNames[r.checked]}</strong></div></div><p><b>URL de la source</b><br><span class="url">${r.link}</span></p><p><b>Point de vigilance éditorial</b><br>${r.note}</p><div class="modal-actions"><a class="btn primary" href="${r.link}" target="_blank" rel="noopener">Ouvrir la source officielle ↗</a><button class="btn" onclick="copyText('${r.link}')">Copier l’URL</button><button class="btn" onclick="toggleFav('${r.id}');openDetail('${r.id}')">${favOn(r.id)?ico('star')+' Retirer des favoris':ico('star')+' Ajouter aux favoris'}</button></div>`;document.getElementById('modal').classList.add('open');document.getElementById('modalTitle').focus?document.getElementById('modalTitle').setAttribute('tabindex','-1'):0;document.getElementById('modalTitle').focus()}
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+function copyText(t){navigator.clipboard?.writeText(t).then(()=>toast('URL copiée')).catch(()=>toast(t))}
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2300)}
+document.getElementById('globalSearch').addEventListener('keydown',e=>{if(e.key==='Enter')runSearch()});
+/* Recherche instantanée (filtre en direct, sans saut de page) */
+let searchTimer=null;
+document.getElementById('globalSearch').addEventListener('input',e=>{
+ clearTimeout(searchTimer);
+ searchTimer=setTimeout(()=>{currentQuery=e.target.value.trim();renderResources()},220);
+});
+
+/* ===== Thème clair / sombre ===== */
+function applyTheme(t){document.documentElement.setAttribute('data-theme',t);try{localStorage.setItem('fsi_theme',t)}catch(e){}}
+document.getElementById('themeToggle').addEventListener('click',()=>{
+ const next=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+ applyTheme(next);toast(next==='dark'?'Thème sombre activé':'Thème clair activé');
+});
+
+/* ===== Menu mobile ===== */
+function toggleMenu(){
+ const links=document.getElementById('navlinks'),btn=document.querySelector('.mobilemenu');
+ const on=links.classList.toggle('show');
+ btn.setAttribute('aria-expanded',on?'true':'false');
+ btn.setAttribute('aria-label',on?'Fermer le menu':'Ouvrir le menu');
+}
+document.querySelectorAll('#navlinks a').forEach(a=>a.addEventListener('click',()=>{
+ const links=document.getElementById('navlinks'),btn=document.querySelector('.mobilemenu');
+ links.classList.remove('show');btn.setAttribute('aria-expanded','false');btn.setAttribute('aria-label','Ouvrir le menu');
+}));
+
+/* ===== Raccourcis clavier : Échap ferme modale et visite guidée ===== */
+document.addEventListener('keydown',e=>{
+ if(e.key==='Escape'){
+  const modal=document.getElementById('modal'),tour=document.getElementById('tourLayer');
+  if(tour.classList.contains('open')){closeTour();return}
+  if(modal.classList.contains('open')){closeModal();return}
+  const links=document.getElementById('navlinks');
+  if(links&&links.classList.contains('show')){
+   links.classList.remove('show');
+   const btn=document.querySelector('.mobilemenu');
+   btn.setAttribute('aria-expanded','false');btn.setAttribute('aria-label','Ouvrir le menu');
+  }
+ }
+ if(e.key==='ArrowRight'&&document.getElementById('tourLayer').classList.contains('open'))nextTour();
+ if(e.key==='ArrowLeft'&&document.getElementById('tourLayer').classList.contains('open'))prevTour();
+});
+
+/* ===== Parcours par situation ===== */
+const scenarios=[
+ {id:'audit',icon:'target',title:'Je prépare un audit',sub:'Textes applicables, guides sectoriels, critères et attentes des contrôleurs',
+  intro:'Parcours recommandé pour préparer un audit de sécurité alimentaire ou une certification. Quatre étapes, dans cet ordre : le texte, le guide, les critères, puis la pratique des contrôleurs.',
+  steps:[
+   {t:'Repérer le texte applicable',why:'Situer l’exigence dans le droit en vigueur avant toute interprétation : règlement européen, loi ou arrêté français.',src:['eurlex','legifrance']},
+   {t:'Vérifier si un guide sectoriel existe',why:'Les GBPH et les guides européens traduisent les exigences en pratique ; ils sont souvent attendus comme preuve en audit.',src:['gbph-fr','gbph-eu']},
+   {t:'Consulter critères et avis scientifiques',why:'Critères microbiologiques, contaminants, avis de l’EFSA : la base des plans de maîtrise et des limites à respecter.',src:['micriteria','efsa-data']},
+   {t:'Voir ce que les contrôleurs regardent',why:'Rapports d’audits de la Commission et résultats des contrôles en France indiquent les attentes réelles du terrain.',src:['audit','alimconfiance']}
+  ]},
+ {id:'alerte',icon:'siren',title:'J’ai une alerte client ou un rappel',sub:'Notifications européennes, rappels français, signaux de veille et fraude',
+  intro:'Face à un lot litigieux ou à une réclamation, ce chemin vous fait passer de l’alerte européenne au signal français, puis à l’angle fraude le cas échéant.',
+  steps:[
+   {t:'Vérifier les notifications européennes',why:'RASFF et ACN indiquent si le même problème est signalé ailleurs en Europe : premier réflexe sur un lot.',src:['rasff','acn']},
+   {t:'Vérifier les rappels en France',why:'RappelConso recense les rappels de produits commercialisés en France, dont ceux de vos fournisseurs.',src:['rappelconso']},
+   {t:'Suivre les signaux de veille',why:'Le BuSCA rassemble les signaux sanitaires utiles pour anticiper une réaction client ou un contrôle.',src:['busca']},
+   {t:'Qualifier l’angle fraude éventuel',why:'Les rapports mensuels FFN montrent les suspicions européennes : utile si l’origine ou la composition est contestée.',src:['ffn','fraud-monthly']}
+  ]},
+ {id:'texte',icon:'scroll-text',title:'Je cherche le texte réglementaire applicable',sub:'Droit européen consolidé, droit français, étiquetage et registres officiels',
+  intro:'Le bon réflexe : commencer par la version consolidée du texte, puis passer aux outils d’interprétation et aux registres de substance.',
+  steps:[
+   {t:'Texte européen consolidé',why:'EUR-Lex donne la version consolidée en vigueur : la seule opposable en cas de litige ou de contrôle.',src:['eurlex','foodlaw']},
+   {t:'Texte français en vigueur',why:'Légifrance rassemble lois, décrets et arrêtés français, avec l’historique des versions.',src:['legifrance']},
+   {t:'Exigences d’étiquetage',why:'FLIS et la page « information du consommateur » résument les mentions obligatoires selon la catégorie de denrée.',src:['flis','fic']},
+   {t:'Registres et bases officielles',why:'Additifs, pesticides, allégations : chaque substance ou allégation possède son registre de référence.',src:['additives','pesticides','healthclaims']}
+  ]},
+ {id:'reunion',icon:'handshake',title:'Je prépare ma réunion avec le consultant',sub:'Les textes à vérifier, les preuves à réunir, mes sources sous la main',
+  intro:'La feuille de route d’une réunion de préparation : arrivez avec les textes consolidés, réunissez les preuves, gardez vos sources sous la main.',
+  steps:[
+   {t:'Rechercher mes sujets clés',why:'Un mot-clé par sujet dans la barre de recherche — allergènes, étiquetage, Listeria — et le catalogue se filtre en direct.',act:{label:ico('search')+' Lancer une recherche',fn:"document.getElementById('globalSearch').scrollIntoView({behavior:'smooth',block:'center'});document.getElementById('globalSearch').focus()"}},
+   {t:'Vérifier les textes en vigueur',why:'Arrivez avec les versions consolidées : c’est la première chose qu’un consultant vérifiera.',src:['eurlex','legifrance']},
+   {t:'Réunir les preuves de conformité',why:'Résultats de contrôles et veille sanitaire sont les documents que l’on vous demandera en premier.',src:['alimconfiance','busca','rasff']},
+   {t:'Garder mes sources sous la main',why:'Ajoutez vos sources en favoris (bouton étoile) : votre sélection reste enregistrée sur ce poste pour la prochaine fois.',act:{label:ico('star')+' Voir ma sélection',fn:'openFavs()'}}
+  ]}
+];
+function renderSitGrid(){
+ document.getElementById('sitGrid').innerHTML=scenarios.map(s=>`<button class="sit-card" id="sit-${s.id}" onclick="openScenario('${s.id}')" aria-expanded="false"><span class="go">Ouvrir →</span><div class="ico-box">${ico(s.icon)}</div><strong>${s.title}</strong><small>${s.sub}</small></button>`).join('');
+}
+function openScenario(id){
+ const sc=scenarios.find(s=>s.id===id);if(!sc)return;
+ document.querySelectorAll('.sit-card').forEach(c=>{const on=c.id==='sit-'+id;c.classList.toggle('active',on);c.setAttribute('aria-expanded',on?'true':'false')});
+ const stepsHtml=sc.steps.map((s,i)=>{
+  let src='';
+  if(s.src){src='<div class="step-src">'+s.src.map(id2=>{const r=resources.find(x=>x.id===id2);return r?`<button onclick="openDetail('${r.id}')">${ico(r.icon)} ${r.name}</button>`:''}).join('')+'</div>'}
+  if(s.act){src=`<div class="step-src"><button class="act" onclick="${s.act.fn}">${s.act.label}</button></div>`}
+  return `<div class="step"><div class="num">${i+1}</div><div><b>${s.t}</b><p>${s.why}</p>${src}</div></div>`;
+ }).join('');
+ const box=document.getElementById('sitPath');
+ box.innerHTML=`<h3>${ico(sc.icon)} ${sc.title}</h3><p>${sc.intro}</p><div class="steps">${stepsHtml}</div>`;
+ box.classList.add('open');
+ box.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+/* ===== Visite guidée ===== */
+const tourSteps=[
+ {sel:'.searchbox',k:'Étape 1 · Rechercher',t:'Une seule barre pour tout trouver',p:'Tapez un sujet, un organisme ou un mot-clé : allergènes, Listeria, RASFF, étiquetage… Le catalogue se filtre en direct.'},
+ {sel:'#situations .sit-grid',k:'Étape 2 · Entrer par situation',t:'Quatre situations, quatre chemins',p:'« Je prépare un audit », « J’ai une alerte », « Je cherche un texte », « Je prépare ma réunion » : chaque carte ouvre un parcours de 4 étapes avec les sources à ouvrir dans l’ordre.'},
+ {sel:'#domainGrid',k:'Étape 3 · Parcourir les domaines',t:'Les domaines de connaissance',p:'Réglementation, étiquetage, microbiologie, alertes, contaminants… Chaque domaine affiche son nombre de sources et filtre le catalogue.'},
+ {sel:'#sources .content-layout',k:'Étape 4 · Lire une fiche',t:'Catalogue, filtres et fiches détaillées',p:'Filtrez par type d’accès ou par périmètre, puis ouvrez « Voir la fiche » : organisme, statut juridique, formats, point de vigilance et état du lien.'},
+ {sel:'#method',k:'Étape 5 · La méthode',t:'Pourquoi ces sources sont fiables',p:'Source primaire privilégiée, type d’accès explicite, statut juridique distingué et date de vérification sur chaque fiche.'}
+];
+let tourIdx=0;
+function startTour(){tourIdx=0;document.getElementById('tourLayer').classList.add('open');showTourStep()}
+function closeTour(){document.getElementById('tourLayer').classList.remove('open')}
+function nextTour(){if(tourIdx>=tourSteps.length-1){closeTour();return}tourIdx++;showTourStep()}
+function prevTour(){if(tourIdx<=0)return;tourIdx--;showTourStep()}
+function showTourStep(){
+ const s=tourSteps[tourIdx],el=document.querySelector(s.sel);
+ if(!el){nextTour();return}
+ el.scrollIntoView({behavior:'smooth',block:'center'});
+ const spot=document.getElementById('tourSpot'),bub=document.getElementById('tourBubble');
+ let frames=0;
+ const place=()=>{
+  const r=el.getBoundingClientRect(),pad=9;
+  spot.style.left=Math.max(6,r.left-pad)+'px';
+  spot.style.top=Math.max(6,r.top-pad)+'px';
+  spot.style.width=Math.min(r.width+pad*2,window.innerWidth-12)+'px';
+  spot.style.height=Math.min(r.height+pad*2,window.innerHeight-12)+'px';
+  const bw=Math.min(340,window.innerWidth-32);
+  let top=r.bottom+16;
+  if(top+250>window.innerHeight)top=Math.max(14,r.top-250);
+  let left=Math.min(Math.max(16,r.left),window.innerWidth-bw-16);
+  bub.style.width=bw+'px';
+  bub.style.left=left+'px';
+  bub.style.top=top+'px';
+  // suit le scroll lisse jusqu'à stabilisation (800 ms max)
+  if(++frames<50)requestAnimationFrame(place);
+ };
+ bub.innerHTML=`<div class="k">${s.k}</div><h4>${s.t}</h4><p>${s.p}</p><div class="tour-nav"><button onclick="closeTour()">Quitter</button><span class="dots">${tourIdx+1} / ${tourSteps.length}</span><span style="display:flex;gap:8px">${tourIdx>0?'<button onclick="prevTour()">← Précédent</button>':''}<button class="next" onclick="nextTour()">${tourIdx===tourSteps.length-1?ico('check')+' Terminer':'Suivant →'}</button></span></div>`;
+ requestAnimationFrame(place);
+}
+window.addEventListener('resize',()=>{if(document.getElementById('tourLayer').classList.contains('open'))showTourStep()});
+
+/* ===== Favoris ===== */
+let favs=[];
+try{favs=JSON.parse(localStorage.getItem('fsi_favs')||'[]')||[]}catch(e){favs=[]}
+function favOn(id){return favs.indexOf(id)>-1}
+function saveFavs(){try{localStorage.setItem('fsi_favs',JSON.stringify(favs))}catch(e){}updateFavBar()}
+function toggleFav(id){
+ const i=favs.indexOf(id);
+ if(i>-1){favs.splice(i,1);toast('Retiré de votre sélection')}else{favs.push(id);toast('Ajouté à votre sélection')}
+ saveFavs();renderResources();
+}
+function updateFavBar(){
+ const bar=document.getElementById('favBar');
+ document.getElementById('favCount').textContent=favs.length+' source'+(favs.length>1?'s':'')+' en favoris';
+ bar.classList.toggle('show',favs.length>0);
+}
+function favLines(){return favs.map(id=>{const r=resources.find(x=>x.id===id);return r?r.name+' — '+r.link:''}).filter(Boolean)}
+function copyFavs(){if(!favs.length){toast('Aucune source en favoris');return}copyAny('Ma sélection de sources (Food Safety Intelligence) :\n'+favLines().join('\n'),'Sélection copiée — collez-la dans votre email')}
+function clearFavs(){favs=[];saveFavs();renderResources();toast('Sélection vidée')}
+function openFavs(){
+ if(!favs.length){toast('Aucune source en favoris : cliquez sur l’étoile dans le catalogue');return}
+ const items=favs.map(id=>{const r=resources.find(x=>x.id===id);return r?`<div class="detail-field" style="margin-bottom:8px"><small>${domainNames[r.domain]} · ${r.geo}</small><strong>${r.name}</strong><br><span style="font-size:10px;color:#7a8798;word-break:break-all">${r.link}</span></div>`:''}).join('');
+ document.getElementById('modalKicker').textContent='MA SÉLECTION · '+favs.length+' SOURCE'+(favs.length>1?'S':'');
+ document.getElementById('modalTitle').textContent='Vos sources favorites';
+ document.getElementById('modalBody').innerHTML=`<p>Cette sélection reste enregistrée sur ce poste (navigateur) : vous la retrouverez à votre prochaine visite.</p>${items}<div class="modal-actions"><button class="btn primary" onclick="copyFavs()">Copier la liste</button><button class="btn" onclick="clearFavs();closeModal()">Vider la sélection</button><button class="btn" onclick="closeModal()">Fermer</button></div>`;
+ document.getElementById('modal').classList.add('open');
+}
+
+/* ===== Statistiques et compteurs ===== */
+function renderStats(){
+ document.getElementById('stDomains').textContent=Object.keys(domainNames).length-1;
+ document.getElementById('stSources').textContent=resources.length;
+ document.getElementById('stVerified').textContent=resources.filter(r=>r.checked==='ok').length;
+ document.getElementById('stVerifiedNote').textContent='liens vérifiés le '+VERIFIED;
+ document.querySelectorAll('.domain').forEach(b=>{
+  const d=b.dataset.domain,n=d==='all'?resources.length:resources.filter(r=>r.domain===d).length;
+  let s=b.querySelector('.count');
+  if(!s){s=document.createElement('span');s.className='count';b.appendChild(s)}
+  s.textContent=n;
+ });
+}
+renderSitGrid();renderStats();updateFavBar();renderResources();
+</script>
+</body></html>
